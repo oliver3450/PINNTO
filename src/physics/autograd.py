@@ -6,33 +6,33 @@ def compute_time_derivatives(
     moment_prediction: torch.Tensor
 ) -> torch.Tensor:
     """
-    Computes d(moment[c, g]) / d(t[c]) for all collocation points c and genes g.
+    Computes d(moment[b, c, g]) / d(t[b, c, 0]) for all beads, collocation points, and genes.
 
-    Exploits the diagonal Jacobian structure: moment[c, g] depends only on t[c],
-    not on t[c'] for c' != c (MomentMLP processes each collocation point independently).
+    t must be a (B, C, 1) leaf tensor created via .clone().requires_grad_(True) so that
+    each (b, c) pair has an independent gradient node. This preserves the full 3D
+    spatiotemporal geometry without collapsing the batch dimension.
 
-    By computing grad(moment[:, g].sum(), t), only t[c] contributes to moment[c, g],
-    so the result[c, 0] = d(moment[c, g]) / d(t[c, 0]) exactly — no cross-point leakage.
+    Diagonal Jacobian property: moment[b, c, g] depends only on t[b, c, 0], not on
+    t[b', c', 0] for (b', c') != (b, c). So grad(moment[..., g].sum(), t)[b, c, 0]
+    = d(moment[b, c, g]) / d(t[b, c, 0]) exactly.
 
     Args:
-        t:                  (C, 1) — collocation times, must have requires_grad=True
-        moment_prediction:  (C, G) — batch-mean MomentMLP output
+        t:                  (B, C, 1) — leaf tensor with requires_grad=True
+        moment_prediction:  (B, C, G) — MomentMLP output per bead
 
     Returns:
-        (C, G) — exact per-collocation, per-gene time derivatives
+        (B, C, G) — per-bead, per-collocation, per-gene time derivatives
     """
-    C, G = moment_prediction.shape
+    G = moment_prediction.shape[-1]
     derivatives = []
 
     for g in range(G):
-        # grad of sum_c moment[c, g] w.r.t. t:
-        #   result[c, 0] = d(moment[c, g]) / d(t[c, 0])   [diagonal Jacobian property]
         grad_g = torch.autograd.grad(
-            outputs=moment_prediction[:, g].sum(),
+            outputs=moment_prediction[..., g].sum(),
             inputs=t,
-            create_graph=True,   # must stay True: physics loss must flow gradients back
+            create_graph=True,
             retain_graph=True,
-        )[0]  # (C, 1)
+        )[0]  # (B, C, 1)
         derivatives.append(grad_g)
 
-    return torch.cat(derivatives, dim=1)  # (C, G)
+    return torch.cat(derivatives, dim=-1)  # (B, C, G)

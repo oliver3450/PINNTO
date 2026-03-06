@@ -137,14 +137,18 @@ class SpatialMechanisticModel(nn.Module):
             # local regulatory context that conditions each bead's RNA trajectory.
             h_cont = interpolate_to_collocation(h_seq, bin_times, collocation_t)  # (B, C, num_tfs)
 
-            # Expand t from (C, 1) to (B, C, 1) for batched MomentMLP evaluation.
-            # Each bead now gets its own spatially-conditioned RNA trajectory.
-            t_expanded = collocation_t.unsqueeze(0).expand(batch_size, -1, -1)    # (B, C, 1)
+            # Clone to create an independent leaf node per batch item.
+            # .expand() shares storage with collocation_t, causing gradients to sum
+            # across the batch dimension. .clone().requires_grad_(True) gives each
+            # (b, c) pair its own gradient node, enabling per-bead CME residuals.
+            t_expanded = collocation_t.unsqueeze(0).expand(batch_size, -1, -1).clone()
+            t_expanded.requires_grad_(True)                                        # (B, C, 1) leaf
 
             moments = self.moment_mlp(t_expanded, h_cont)  # tuple of 5 x (B, C, G)
 
             result["burst_freq_cont"] = a_cont
             result["burst_size_cont"] = b_cont
             result["moments"] = moments
+            result["t_expanded"] = t_expanded
 
         return result

@@ -56,31 +56,23 @@ def compute_physics_loss(model, collocation_t, result):
     """
     Evaluate the 5-ODE CME residuals at random collocation points.
 
-    Moments are (Batch, C, G) — conditioned on each bead's h_context.
-    We average over the batch before computing derivatives so that collocation_t
-    remains (C, 1), enabling the diagonal-Jacobian derivative trick in autograd.py.
-    The physics loss then enforces the CME constraint on the mean trajectory,
-    while L_data enforces per-bead accuracy independently.
+    All tensors remain (B, C, G) — full spatiotemporal geometry is preserved.
+    t_expanded is the (B, C, 1) leaf node from the forward pass; gradients flow
+    independently per bead, giving correct per-bead CME residuals.
     """
-    moments_batch = result["moments"]  # tuple of 5 x (B, C, G)
+    # Leaf node created in forward pass via .clone().requires_grad_(True)
+    t_expanded = result["t_expanded"]                              # (B, C, 1)
 
-    # Average over batch: (B, C, G) → (C, G)
-    nascent_mean = moments_batch[0].mean(0)
-    mature_mean  = moments_batch[1].mean(0)
-    nascent_var  = moments_batch[2].mean(0)
-    mature_var   = moments_batch[3].mean(0)
-    cov_nm       = moments_batch[4].mean(0)
+    nascent_mean, mature_mean, nascent_var, mature_var, cov_nm = result["moments"]  # each (B, C, G)
 
-    # Per-gene derivatives via diagonal-Jacobian approach (see autograd.py)
-    d_nascent_mean_dt = compute_time_derivatives(collocation_t, nascent_mean)
-    d_mature_mean_dt  = compute_time_derivatives(collocation_t, mature_mean)
-    d_nascent_var_dt  = compute_time_derivatives(collocation_t, nascent_var)
-    d_mature_var_dt   = compute_time_derivatives(collocation_t, mature_var)
-    d_cov_nm_dt       = compute_time_derivatives(collocation_t, cov_nm)
+    d_nascent_mean_dt = compute_time_derivatives(t_expanded, nascent_mean)
+    d_mature_mean_dt  = compute_time_derivatives(t_expanded, mature_mean)
+    d_nascent_var_dt  = compute_time_derivatives(t_expanded, nascent_var)
+    d_mature_var_dt   = compute_time_derivatives(t_expanded, mature_var)
+    d_cov_nm_dt       = compute_time_derivatives(t_expanded, cov_nm)
 
-    # Average burst params over batch: (B, C, G) → (C, G)
-    a_cont = result["burst_freq_cont"].mean(dim=0)
-    b_cont = result["burst_size_cont"].mean(dim=0)
+    a_cont = result["burst_freq_cont"]   # (B, C, G)
+    b_cont = result["burst_size_cont"]   # (B, C, G)
 
     physics_loss = compute_cme_residuals(
         nascent_mean=nascent_mean,
