@@ -28,6 +28,11 @@ from src.data.regulatory_networks import build_frozen_grn_matrix
 from src.data.dataloader import get_dataloader
 
 
+def get_model(m):
+    """Unwrap DataParallel to access model attributes (beta, gamma, moment_mlp)."""
+    return m.module if hasattr(m, "module") else m
+
+
 def load_configs(config_path: str, loss_weights_path: str) -> dict:
     with open(config_path) as f:
         config = yaml.safe_load(f)
@@ -52,18 +57,26 @@ def compute_data_loss(moments, empirical_moments):
     return loss
 
 
-def compute_physics_loss(model, collocation_t, result):
+def compute_physics_loss(raw_model, collocation_t, result):
     """
     Evaluate the 5-ODE CME residuals at random collocation points.
 
-    All tensors remain (B, C, G) — full spatiotemporal geometry is preserved.
-    t_expanded is the (B, C, 1) leaf node from the forward pass; gradients flow
-    independently per bead, giving correct per-bead CME residuals.
+    t_expanded and moments are rebuilt here — AFTER DataParallel gather — so the
+    computation graph is intact and autograd.grad correctly traces moment → t_expanded.
+    h_cont is a regular gathered tensor (B, C, num_tfs) used to condition moment_mlp.
     """
-    # Leaf node created in forward pass via .clone().requires_grad_(True)
-    t_expanded = result["t_expanded"]                              # (B, C, 1)
+    h_cont = result["h_cont"]                                          # (B, C, num_tfs)
+    B = h_cont.shape[0]
+    C = collocation_t.shape[0]
 
-    nascent_mean, mature_mean, nascent_var, mature_var, cov_nm = result["moments"]  # each (B, C, G)
+    # Rebuild leaf node post-gather: independent gradient per (b, c) pair
+    t_expanded = collocation_t.unsqueeze(0).expand(B, C, -1).clone()
+    t_expanded.requires_grad_(True)                                    # (B, C, 1) fresh leaf
+
+    # Recompute moments with this fresh t_expanded — graph is clean
+    nascent_mean, mature_mean, nascent_var, mature_var, cov_nm = raw_model.moment_mlp(
+        t_expanded, h_cont
+    )  # each (B, C, G)
 
     d_nascent_mean_dt = compute_time_derivatives(t_expanded, nascent_mean)
     d_mature_mean_dt  = compute_time_derivatives(t_expanded, mature_mean)
@@ -87,8 +100,8 @@ def compute_physics_loss(model, collocation_t, result):
         d_cov_nm_dt=d_cov_nm_dt,
         a_t=a_cont,
         b_t=b_cont,
-        beta=model.beta,
-        gamma=model.gamma,
+        beta=raw_model.beta,
+        gamma=raw_model.gamma,
     )
 
     return physics_loss
@@ -124,8 +137,7 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
     fate_loss_accum = 0.0
     n_batches = 0
 
-    # Unwrap DataParallel to access model attributes (beta, gamma, moment_mlp)
-    raw_model = model.module if isinstance(model, nn.DataParallel) else model
+    raw_model = get_model(model)
 
     lambda_data = config["lambda_data"]
     lambda_phys = config["lambda_phys"]
@@ -261,9 +273,8 @@ def main():
         losses = train_one_epoch(model, dataloader, optimizer, config, device, epoch)
         scheduler.step()
 
-        raw_model = model.module if isinstance(model, nn.DataParallel) else model
-
         if epoch % 10 == 0 or epoch == 1:
+            raw_model = get_model(model)
             lr = optimizer.param_groups[0]["lr"]
             print(
                 f"Epoch {epoch:4d} | "
@@ -281,7 +292,7 @@ def main():
             best_loss = losses["total"]
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": raw_model.state_dict(),
+                "model_state_dict": get_model(model).state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "losses": losses,
                 "config": config,
@@ -291,7 +302,7 @@ def main():
         if epoch % 100 == 0:
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": raw_model.state_dict(),
+                "model_state_dict": get_model(model).state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "losses": losses,
                 "config": config,

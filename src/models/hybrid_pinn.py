@@ -137,18 +137,13 @@ class SpatialMechanisticModel(nn.Module):
             # local regulatory context that conditions each bead's RNA trajectory.
             h_cont = interpolate_to_collocation(h_seq, bin_times, collocation_t)  # (B, C, num_tfs)
 
-            # Clone to create an independent leaf node per batch item.
-            # .expand() shares storage with collocation_t, causing gradients to sum
-            # across the batch dimension. .clone().requires_grad_(True) gives each
-            # (b, c) pair its own gradient node, enabling per-bead CME residuals.
-            t_expanded = collocation_t.unsqueeze(0).expand(batch_size, -1, -1).clone()
-            t_expanded.requires_grad_(True)                                        # (B, C, 1) leaf
-
-            moments = self.moment_mlp(t_expanded, h_cont)  # tuple of 5 x (B, C, G)
-
+            # h_cont is a regular tensor — safe to gather across DataParallel replicas.
+            # t_expanded and moments are NOT stored here: DataParallel's gather breaks
+            # the computation graph between per-replica leaf t_expanded and the gathered
+            # moment tensors. Instead, compute_physics_loss rebuilds t_expanded and
+            # re-runs moment_mlp after gathering, keeping the graph intact.
             result["burst_freq_cont"] = a_cont
             result["burst_size_cont"] = b_cont
-            result["moments"] = moments
-            result["t_expanded"] = t_expanded
+            result["h_cont"] = h_cont
 
         return result
