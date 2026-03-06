@@ -56,23 +56,31 @@ def compute_physics_loss(model, collocation_t, result):
     """
     Evaluate the 5-ODE CME residuals at random collocation points.
 
-    The MomentMLP predictions and their time-derivatives are computed here.
-    The burst parameters a(t), b(t) come from the RNN via differentiable
-    linear interpolation (already computed in the forward pass).
+    Moments are (Batch, C, G) — conditioned on each bead's h_context.
+    We average over the batch before computing derivatives so that collocation_t
+    remains (C, 1), enabling the diagonal-Jacobian derivative trick in autograd.py.
+    The physics loss then enforces the CME constraint on the mean trajectory,
+    while L_data enforces per-bead accuracy independently.
     """
-    nascent_mean, mature_mean, nascent_var, mature_var, cov_nm = result["moments"]
+    moments_batch = result["moments"]  # tuple of 5 x (B, C, G)
 
-    # Compute d/dt of each moment via autograd through the MomentMLP
+    # Average over batch: (B, C, G) → (C, G)
+    nascent_mean = moments_batch[0].mean(0)
+    mature_mean  = moments_batch[1].mean(0)
+    nascent_var  = moments_batch[2].mean(0)
+    mature_var   = moments_batch[3].mean(0)
+    cov_nm       = moments_batch[4].mean(0)
+
+    # Per-gene derivatives via diagonal-Jacobian approach (see autograd.py)
     d_nascent_mean_dt = compute_time_derivatives(collocation_t, nascent_mean)
-    d_mature_mean_dt = compute_time_derivatives(collocation_t, mature_mean)
-    d_nascent_var_dt = compute_time_derivatives(collocation_t, nascent_var)
-    d_mature_var_dt = compute_time_derivatives(collocation_t, mature_var)
-    d_cov_nm_dt = compute_time_derivatives(collocation_t, cov_nm)
+    d_mature_mean_dt  = compute_time_derivatives(collocation_t, mature_mean)
+    d_nascent_var_dt  = compute_time_derivatives(collocation_t, nascent_var)
+    d_mature_var_dt   = compute_time_derivatives(collocation_t, mature_var)
+    d_cov_nm_dt       = compute_time_derivatives(collocation_t, cov_nm)
 
-    # The interpolated burst parameters are already batch-expanded:
-    # shape (Batch, Num_Collocation, Num_Genes) — average over batch dim
-    a_cont = result["burst_freq_cont"].mean(dim=0)   # (C, G)
-    b_cont = result["burst_size_cont"].mean(dim=0)    # (C, G)
+    # Average burst params over batch: (B, C, G) → (C, G)
+    a_cont = result["burst_freq_cont"].mean(dim=0)
+    b_cont = result["burst_size_cont"].mean(dim=0)
 
     physics_loss = compute_cme_residuals(
         nascent_mean=nascent_mean,
@@ -141,12 +149,17 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
         # --- Forward pass ---
         result = model(u_seq, collocation_t=collocation_t)
 
-        # --- L_data: MomentMLP at bin midpoints vs empirical weighted moments ---
-        seq_len = u_seq.shape[1]
+        # --- L_data: per-bead MomentMLP predictions vs empirical moments ---
+        # MomentMLP is conditioned on h_seq so each bead gets its own trajectory.
+        # bin_t: (B, S, 1) — same pseudotime grid for all beads
+        # h_seq: (B, S, num_tfs) — spatially unique regulatory context per bead
+        B, seq_len, _ = u_seq.shape
         bin_midpoints = torch.linspace(
             dt / 2, 1.0 - dt / 2, seq_len, device=device
         ).unsqueeze(-1)  # (S, 1)
-        moments_at_bins = model.moment_mlp(bin_midpoints)
+        bin_t = bin_midpoints.unsqueeze(0).expand(B, -1, -1)   # (B, S, 1)
+        h_seq = result["hidden_tfs"]                            # (B, S, num_tfs)
+        moments_at_bins = model.moment_mlp(bin_t, h_seq)       # tuple of 5 x (B, S, G)
         l_data = compute_data_loss(moments_at_bins, empirical)
 
         # --- L_phys: CME residuals at collocation points ---
