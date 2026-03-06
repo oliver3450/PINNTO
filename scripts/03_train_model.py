@@ -124,6 +124,9 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
     fate_loss_accum = 0.0
     n_batches = 0
 
+    # Unwrap DataParallel to access model attributes (beta, gamma, moment_mlp)
+    raw_model = model.module if isinstance(model, nn.DataParallel) else model
+
     lambda_data = config["lambda_data"]
     lambda_phys = config["lambda_phys"]
     lambda_fate = config["lambda_fate"]
@@ -150,12 +153,12 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
             dt / 2, 1.0 - dt / 2, seq_len, device=device
         ).unsqueeze(-1)  # (S, 1)
         bin_t = bin_midpoints.unsqueeze(0).expand(B, -1, -1)   # (B, S, 1)
-        h_seq = result["hidden_tfs"]                            # (B, S, num_tfs)
-        moments_at_bins = model.moment_mlp(bin_t, h_seq)       # tuple of 5 x (B, S, G)
+        h_seq = result["hidden_tfs"]                                      # (B, S, num_tfs)
+        moments_at_bins = raw_model.moment_mlp(bin_t, h_seq)             # tuple of 5 x (B, S, G)
         l_data = compute_data_loss(moments_at_bins, empirical)
 
         # --- L_phys: CME residuals at collocation points ---
-        l_phys = compute_physics_loss(model, collocation_t, result)
+        l_phys = compute_physics_loss(raw_model, collocation_t, result)
 
         # --- L_fate: Cross-entropy at every time step ---
         l_fate = compute_fate_loss(result["fate_logits"], fate_targets)
@@ -221,6 +224,10 @@ def main():
         dt=config["dt"],
     ).to(device)
 
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs via DataParallel")
+        model = nn.DataParallel(model)
+
     print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
@@ -254,6 +261,8 @@ def main():
         losses = train_one_epoch(model, dataloader, optimizer, config, device, epoch)
         scheduler.step()
 
+        raw_model = model.module if isinstance(model, nn.DataParallel) else model
+
         if epoch % 10 == 0 or epoch == 1:
             lr = optimizer.param_groups[0]["lr"]
             print(
@@ -263,16 +272,16 @@ def main():
                 f"Phys: {losses['phys']:.4f} | "
                 f"Fate: {losses['fate']:.4f} | "
                 f"LR: {lr:.2e} | "
-                f"beta_mean: {model.beta.mean().item():.4f} | "
-                f"gamma_mean: {model.gamma.mean().item():.4f}"
+                f"beta_mean: {raw_model.beta.mean().item():.4f} | "
+                f"gamma_mean: {raw_model.gamma.mean().item():.4f}"
             )
 
-        # Save best checkpoint
+        # Save best checkpoint (always save raw_model state for clean loading)
         if losses["total"] < best_loss:
             best_loss = losses["total"]
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": raw_model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "losses": losses,
                 "config": config,
@@ -282,7 +291,7 @@ def main():
         if epoch % 100 == 0:
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict(),
+                "model_state_dict": raw_model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "losses": losses,
                 "config": config,
