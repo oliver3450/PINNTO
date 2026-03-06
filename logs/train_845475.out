@@ -1,0 +1,33 @@
+Starting Model Training on GPU Node: gnode02
+Job ID: 845475
+Step 3: Training Hybrid RNN-PINN Model on Fake Data...
+Training on: cuda
+Loading frozen GRN matrix...
+Model parameters: 195,894
+Loading dataset from: data/processed/fake_spatial.h5ad
+Dataset loaded: 400 beads, seq_len=50
+
+Starting training for 500 epochs
+  lambda_data=1.0, lambda_phys=0.1, lambda_fate=5.0
+  collocation_points=100, dt=0.02
+----------------------------------------------------------------------
+Epoch    1 | Total: 6279319285.7600 | Data: 430.7747 | Phys: 62793188167.6800 | Fate: 6.2516 | LR: 1.00e-03 | beta_mean: 0.6915 | gamma_mean: 0.6928
+Epoch   10 | Total: 13.6543 | Data: 8.6180 | Phys: 14.2231 | Fate: 0.7228 | LR: 9.99e-04 | beta_mean: 0.5860 | gamma_mean: 0.5751
+Epoch   20 | Total: 12.5874 | Data: 7.9526 | Phys: 10.9931 | Fate: 0.7071 | LR: 9.96e-04 | beta_mean: 0.5105 | gamma_mean: 0.5001
+Epoch   30 | Total: 12.0806 | Data: 7.6916 | Phys: 8.3844 | Fate: 0.7101 | LR: 9.91e-04 | beta_mean: 0.4468 | gamma_mean: 0.4395
+Epoch   40 | Total: 11.9861 | Data: 7.6538 | Phys: 7.3574 | Fate: 0.7193 | LR: 9.84e-04 | beta_mean: 0.4156 | gamma_mean: 0.4109
+Epoch   50 | Total: 11.7268 | Data: 7.5284 | Phys: 5.5954 | Fate: 0.7278 | LR: 9.76e-04 | beta_mean: 0.3782 | gamma_mean: 0.3781
+Epoch   60 | Total: 11.6121 | Data: 7.5551 | Phys: 4.3163 | Fate: 0.7251 | LR: 9.65e-04 | beta_mean: 0.3506 | gamma_mean: 0.3548
+Epoch   70 | Total: 11.3134 | Data: 7.5348 | Phys: 2.9053 | Fate: 0.6976 | LR: 9.52e-04 | beta_mean: 0.3150 | gamma_mean: 0.3246
+Epoch   80 | Total: 11.2864 | Data: 7.5638 | Phys: 2.3524 | Fate: 0.6975 | LR: 9.38e-04 | beta_mean: 0.2843 | gamma_mean: 0.2973
+Epoch   90 | Total: 11.0613 | Data: 7.4246 | Phys: 1.2267 | Fate: 0.7028 | LR: 9.22e-04 | beta_mean: 0.2660 | gamma_mean: 0.2798
+Epoch  100 | Total: 11.0250 | Data: 7.4070 | Phys: 0.9582 | Fate: 0.7044 | LR: 9.05e-04 | beta_mean: 0.2521 | gamma_mean: 0.2655
+Epoch  110 | Total: 10.9715 | Data: 7.3700 | Phys: 0.8007 | Fate: 0.7043 | LR: 8.85e-04 | beta_mean: 0.2381 | gamma_mean: 0.2504
+Epoch  120 | Total: 11.0697 | Data: 7.4364 | Phys: 1.0358 | Fate: 0.7060 | LR: 8.65e-04 | beta_mean: 0.2257 | gamma_mean: 0.2365
+Epoch  130 | Total: 10.8999 | Data: 7.3125 | Phys: 0.7348 | Fate: 0.7028 | LR: 8.42e-04 | beta_mean: 0.2166 | gamma_mean: 0.2267
+Epoch  140 | Total: 10.8993 | Data: 7.2821 | Phys: 0.4928 | Fate: 0.7136 | LR: 8.19e-04 | beta_mean: 0.2030 | gamma_mean: 0.2117
+Epoch  150 | Total: 10.8668 | Data: 7.2802 | Phys: 0.4166 | Fate: 0.7090 | LR: 7.94e-04 | beta_mean: 0.1921 | gamma_mean: 0.2003
+Epoch  160 | Total: 10.8430 | Data: 7.2992 | Phys: 0.3946 | Fate: 0.7009 | LR: 7.68e-04 | beta_mean: 0.1788 | gamma_mean: 0.1856
+Epoch  170 | Total: 10.8182 | Data: 7.2539 | Phys: 0.3542 | Fate: 0.7058 | LR: 7.41e-04 | beta_mean: 0.1723 | gamma_mean: 0.1790
+Epoch  180 | Total: 10.7062 | Data: 7.1695 | Phys: 0.3342 | Fate: 0.7007 | LR: 7.13e-04 | beta_mean: 0.1655 | gamma_mean: 0.1720
+Epoch  190 | Total: 10.7324 | Data: 7.1952 | Phys: 0.3034 | Fate: 0.7014 | LR: 6.84e-04 | beta_mean: 0.1580 | gamma_mean: 0.1642
