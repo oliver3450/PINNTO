@@ -29,8 +29,31 @@ from src.data.dataloader import get_dataloader
 
 
 def get_model(m):
-    """Unwrap DataParallel to access model attributes (beta, gamma, moment_mlp)."""
-    return m.module if hasattr(m, "module") else m
+    """Unwrap DataParallel and DistributedPINNWrapper to reach the base SpatialMechanisticModel."""
+    if hasattr(m, "module"): m = m.module   # unwrap DataParallel
+    if hasattr(m, "model"):  m = m.model    # unwrap DistributedPINNWrapper
+    return m
+
+
+class DistributedPINNWrapper(nn.Module):
+    """
+    Thin nn.Module wrapper that moves compute_physics_loss INSIDE the DataParallel
+    forward call so the Jacobian computation is distributed across all GPUs.
+
+    DataParallel chunks both u_seq (batch dim) and collocation_t (collocation dim),
+    so each GPU evaluates CME residuals at C/num_gpus collocation points independently.
+    The scalar l_phys from each GPU is unsqueezed to (1,) so DataParallel can gather
+    and concatenate them; .mean() in train_one_epoch gives the distributed physics loss.
+    """
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, u_seq, collocation_t):
+        result = self.model(u_seq, collocation_t=collocation_t)
+        l_phys_chunk = compute_physics_loss(self.model, collocation_t, result)
+        result["l_phys"] = l_phys_chunk.unsqueeze(0)   # (1,) for DataParallel gather
+        return result
 
 
 def load_configs(config_path: str, loss_weights_path: str) -> dict:
@@ -169,8 +192,8 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
         moments_at_bins = raw_model.moment_mlp(bin_t, h_seq)             # tuple of 5 x (B, S, G)
         l_data = compute_data_loss(moments_at_bins, empirical)
 
-        # --- L_phys: CME residuals at collocation points ---
-        l_phys = compute_physics_loss(raw_model, collocation_t, result)
+        # --- L_phys: gathered from per-GPU physics loss computed in DistributedPINNWrapper ---
+        l_phys = result["l_phys"].mean()
 
         # --- L_fate: Cross-entropy at every time step ---
         l_fate = compute_fate_loss(result["fate_logits"], fate_targets)
@@ -238,7 +261,7 @@ def main():
 
     if torch.cuda.device_count() > 1:
         print(f"Using {torch.cuda.device_count()} GPUs via DataParallel")
-        model = nn.DataParallel(model)
+        model = nn.DataParallel(DistributedPINNWrapper(model))
 
     print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
 
