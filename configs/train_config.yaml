@@ -1,0 +1,14 @@
+# Data Dimensions (You must update these to match your actual .h5ad dataset)
+num_tfs: 50
+num_target_genes: 200
+num_terminal_fates: 2
+input_spatial_dim: 50  # Number of tracked extracellular ligands
+
+# Sequence Construction
+dt: 0.02               # Pseudotime bin width (creates 50 sequence steps from 0 to 1)
+
+# Training Hyperparameters
+batch_size: 16         # Number of cell trajectories per step
+epochs: 500
+learning_rate: 0.001
+collocation_points: 100 # Random continuous 't' points sampled per batch to enforce physics
