@@ -1,48 +1,44 @@
-import argparse
 import os
-import scanpy as sc
 import scvelo as scv
+import scanpy as sc
+import anndata as ad
+import pandas as pd
 
 def main():
-    parser = argparse.ArgumentParser(description="Merge Spacemake coordinates with Velocyto matrices.")
-    parser.add_argument("--spatial_h5ad", required=True, help="Path to Spacemake .h5ad")
-    parser.add_argument("--velocyto_loom", required=True, help="Path to Velocyto .loom")
-    parser.add_argument("--output", default="data/processed/spatial_adata.h5ad")
-    args = parser.parse_args()
+    print("Step 1: Loading raw datasets...")
+    PROJ_DIR = "data/raw/openst_data/spacemake/projects/openst_demo"
+    LOOM_PATH = f"{PROJ_DIR}/velocyto_output/final_converted.loom"
+    SPACEMAKE_H5AD_PATH = f"{PROJ_DIR}/processed_data/openst_demo_e13_mouse_head/h5ad/spatial.h5ad"
+    OUT_PATH = "data/processed/spatial_adata.h5ad"
 
-    print(f"Loading Spatial data: {args.spatial_h5ad}")
-    adata_spatial = sc.read_h5ad(args.spatial_h5ad)
-    
-    print(f"Loading Velocyto data: {args.velocyto_loom}")
-    adata_loom = scv.read(args.velocyto_loom, cache=True)
+    if not os.path.exists(LOOM_PATH): raise FileNotFoundError(f"Missing: {LOOM_PATH}")
+    if not os.path.exists(SPACEMAKE_H5AD_PATH): raise FileNotFoundError(f"Missing: {SPACEMAKE_H5AD_PATH}")
 
-    print("\n--- Barcode Diagnostics ---")
-    print(f"Spatial Barcode Example: {adata_spatial.obs_names[0]}")
-    print(f"Loom Barcode Example:    {adata_loom.obs_names[0]}")
-    
-    # Normalizing Velocyto barcodes (adjust this if the print statements show a different mismatch)
-    # Example: converting 'sample_id:ACGTCGATx' to 'ACGTCGAT'
-    clean_barcodes = []
-    for bc in adata_loom.obs_names:
-        clean_bc = bc.split(':')[-1]  # Strip prefix
-        clean_bc = clean_bc.replace('x', '').replace('-1', '') # Strip suffixes
-        clean_barcodes.append(clean_bc)
-    
-    adata_loom.obs_names = clean_barcodes
-    print(f"Cleaned Loom Example:    {adata_loom.obs_names[0]}\n")
+    vdata = scv.read_loom(LOOM_PATH)
+    sdata = sc.read_h5ad(SPACEMAKE_H5AD_PATH)
 
-    print("Merging datasets...")
-    adata_merged = scv.utils.merge(adata_spatial, adata_loom)
-    
-    if adata_merged.n_obs == 0:
-        raise ValueError("CRITICAL FAILURE: 0 cells remained after merge. Barcode strings do not match.")
+    print("Step 2: Cleaning barcodes and performing inner join...")
+    vdata.obs.index = vdata.obs.index.str.replace('final_converted:', '').str.replace('x', '')
+    common_barcodes = vdata.obs.index.intersection(sdata.obs.index)
+    vdata, sdata = vdata[common_barcodes].copy(), sdata[common_barcodes].copy()
 
-    print(f"Success. Final shape: {adata_merged.shape}")
-    print(f"Layers available: {list(adata_merged.layers.keys())}")
+    print("Step 3: Transferring spatial geometry...")
+    vdata.obsm['spatial'] = sdata.obsm['spatial'].copy()
+
+    print("Step 4: Filtering to 2,000 highly variable genes...")
+    scv.pp.filter_and_normalize(vdata, min_shared_counts=20, n_top_genes=2000)
+    scv.pp.moments(vdata, n_pcs=30, n_neighbors=30)
+
+    print("Step 5: Computing empirical steady-state kinetics...")
+    scv.tl.velocity(vdata, mode='deterministic')
+
+    print("Step 6: Saving finalized AnnData and Gene List...")
+    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+    vdata.write(OUT_PATH)
     
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
-    adata_merged.write_h5ad(args.output)
-    print(f"Saved ready-to-train matrix to {args.output}")
+    expressed_genes = vdata.var_names.tolist()
+    pd.Series(expressed_genes).to_csv("data/processed/expressed_genes.csv", index=False, header=False)
+    print(f"Successfully prepared {OUT_PATH}")
 
 if __name__ == "__main__":
     main()
