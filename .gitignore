@@ -31,6 +31,9 @@ build/
 .ipynb_checkpoints/
 *.ipynb
 
+# Nested project copy (created by HPC rsync)
+spatial_mechanistic_model/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,9 +1,0 @@
-Starting Model Training on GPU Node: gnode02
-Job ID: 845471
-{"message":"[AUTH]\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","code":40001,"info":"\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","args":[null],"scode":471}Step 3: Training Hybrid RNN-PINN Model...
-Training on: cuda
-Loading frozen GRN matrix...
-Model parameters: 13,998,894
-Loading dataset from: data/processed/spatial_adata.h5ad
-{"message":"[AUTH]\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","code":40001,"info":"\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","args":[null],"scode":471}Training Complete. Model weights saved.
-{"message":"[AUTH]\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","code":40001,"info":"\u8d85\u8fc7\u5f53\u5929\u7684\u53d1\u9001\u6b21\u6570\u9650\u5236[5]\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5","args":[null],"scode":471}

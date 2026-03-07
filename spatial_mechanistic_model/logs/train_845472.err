@@ -1,28 +1,0 @@
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   391  100   279  100   112    844    338 --:--:-- --:--:-- --:--:--  1181100   391  100   279  100   112    842    338 --:--:-- --:--:-- --:--:--  1177
-Traceback (most recent call last):
-  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 297, in <module>
-    main()
-  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 234, in main
-    dataloader = get_dataloader(
-  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/../src/data/dataloader.py", line 112, in get_dataloader
-    dataset = SpatialTranscriptomicsDataset(h5ad_path, seq_len, num_genes, num_fates)
-  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/../src/data/dataloader.py", line 26, in __init__
-    self.adata = sc.read_h5ad(h5ad_path)
-  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/anndata/_io/h5ad.py", line 239, in read_h5ad
-    with h5py.File(filename, "r") as f:
-  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/h5py/_hl/files.py", line 555, in __init__
-    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
-  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/h5py/_hl/files.py", line 232, in make_fid
-    fid = h5f.open(name, flags, fapl=fapl)
-  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
-  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
-  File "h5py/h5f.pyx", line 106, in h5py.h5f.open
-FileNotFoundError: [Errno 2] Unable to synchronously open file (unable to open file: name = 'data/processed/spatial_adata.h5ad', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   110    0     0  100   110      0    715 --:--:-- --:--:-- --:--:--   714100   389  100   279  100   110    776    306 --:--:-- --:--:-- --:--:--  1080
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   395  100   279  100   116   1026    426 --:--:-- --:--:-- --:--:--  1457

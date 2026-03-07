@@ -1,6 +1,0 @@
-# The dynamic lambdas for the Multi-Task Loss Function
-# L_total = (lambda_data * L_data) + (lambda_phys * L_phys) + (lambda_fate * L_fate)
-
-lambda_data: 1.0       # Weight for fitting the empirical weighted RNA bins
-lambda_phys: 0.1       # Weight for thermodynamic CME equations (start low, gradually increase)
-lambda_fate: 5.0       # Weight for topological classification (Classification is usually scaled higher)
