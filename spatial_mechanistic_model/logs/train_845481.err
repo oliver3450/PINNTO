@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 317, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 273, in main
+    losses = train_one_epoch(model, dataloader, optimizer, config, device, epoch)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 157, in train_one_epoch
+    result = model(u_seq, collocation_t=collocation_t)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/data_parallel.py", line 195, in forward
+    return self.gather(outputs, self.output_device)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/data_parallel.py", line 218, in gather
+    return gather(outputs, output_device, dim=self.dim)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/scatter_gather.py", line 136, in gather
+    res = gather_map(outputs)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/scatter_gather.py", line 128, in gather_map
+    return type(out)((k, gather_map([d[k] for d in outputs])) for k in out)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/scatter_gather.py", line 128, in <genexpr>
+    return type(out)((k, gather_map([d[k] for d in outputs])) for k in out)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/scatter_gather.py", line 122, in gather_map
+    return Gather.apply(target_device, dim, *outputs)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/autograd/function.py", line 575, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/_functions.py", line 80, in forward
+    return comm.gather(inputs, ctx.dim, ctx.target_device)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/parallel/comm.py", line 253, in gather
+    return torch._C._gather(tensors, dim, destination)
+RuntimeError: Input tensor at index 7 has invalid shape [2, 9, 200], but expected [2, 13, 200]

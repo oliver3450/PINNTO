@@ -19,12 +19,12 @@ source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate gdl_env
 
 # --- EXECUTION ---
-echo "Step 3: Training Hybrid RNN-PINN Model..."
+echo "Step 3: Training Hybrid RNN-PINN Model on Fake Data..."
 export PYTHONUNBUFFERED=1
 
 python scripts/03_train_model.py \
     --config configs/train_config.yaml \
     --loss_weights configs/loss_weights.yaml \
-    --h5ad data/processed/spatial_adata.h5ad
+    --h5ad data/processed/fake_spatial.h5ad
 
 echo "Training Complete. Model weights saved."

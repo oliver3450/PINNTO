@@ -13,7 +13,6 @@ Usage:
 import argparse
 import os
 import yaml
-import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -30,40 +29,8 @@ from src.data.dataloader import get_dataloader
 
 
 def get_model(m):
-    """Unwrap DataParallel and DistributedPINNWrapper to reach the base SpatialMechanisticModel."""
-    if hasattr(m, "module"): m = m.module   # unwrap DataParallel
-    if hasattr(m, "model"):  m = m.model    # unwrap DistributedPINNWrapper
-    return m
-
-
-class DistributedPINNWrapper(nn.Module):
-    """
-    Thin nn.Module wrapper that moves compute_physics_loss INSIDE the DataParallel
-    forward call so the Jacobian computation is distributed across all GPUs.
-
-    DataParallel chunks both u_seq (batch dim) and collocation_t (collocation dim),
-    so each GPU evaluates CME residuals at C/num_gpus collocation points independently.
-    The scalar l_phys from each GPU is unsqueezed to (1,) so DataParallel can gather
-    and concatenate them; .mean() in train_one_epoch gives the distributed physics loss.
-    """
-    def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def forward(self, u_seq, collocation_t):
-        result = self.model(u_seq, collocation_t=collocation_t)
-
-        # Clamp kinetic rates to prevent degenerate zero-rate solutions
-        base = self.model.module if hasattr(self.model, "module") else self.model
-        clamped_beta  = torch.clamp(base.beta,  min=1e-4)
-        clamped_gamma = torch.clamp(base.gamma, min=1e-4)
-
-        l_phys_chunk = compute_physics_loss(
-            self.model, collocation_t, result,
-            beta=clamped_beta, gamma=clamped_gamma,
-        )
-        result["l_phys"] = l_phys_chunk.unsqueeze(0)   # (1,) for DataParallel gather
-        return result
+    """Unwrap DataParallel to access model attributes (beta, gamma, moment_mlp)."""
+    return m.module if hasattr(m, "module") else m
 
 
 def load_configs(config_path: str, loss_weights_path: str) -> dict:
@@ -90,18 +57,14 @@ def compute_data_loss(moments, empirical_moments):
     return loss
 
 
-def compute_physics_loss(raw_model, collocation_t, result, beta=None, gamma=None):
+def compute_physics_loss(raw_model, collocation_t, result):
     """
     Evaluate the 5-ODE CME residuals at random collocation points.
 
     t_expanded and moments are rebuilt here — AFTER DataParallel gather — so the
     computation graph is intact and autograd.grad correctly traces moment → t_expanded.
     h_cont is a regular gathered tensor (B, C, num_tfs) used to condition moment_mlp.
-
-    beta/gamma: pre-clamped kinetic rates. If None, reads directly from raw_model.
     """
-    beta  = beta  if beta  is not None else raw_model.beta
-    gamma = gamma if gamma is not None else raw_model.gamma
     h_cont = result["h_cont"]                                          # (B, C, num_tfs)
     B = h_cont.shape[0]
     C = collocation_t.shape[0]
@@ -137,8 +100,8 @@ def compute_physics_loss(raw_model, collocation_t, result, beta=None, gamma=None
         d_cov_nm_dt=d_cov_nm_dt,
         a_t=a_cont,
         b_t=b_cont,
-        beta=beta,
-        gamma=gamma,
+        beta=raw_model.beta,
+        gamma=raw_model.gamma,
     )
 
     return physics_loss
@@ -206,8 +169,8 @@ def train_one_epoch(model, dataloader, optimizer, config, device, epoch):
         moments_at_bins = raw_model.moment_mlp(bin_t, h_seq)             # tuple of 5 x (B, S, G)
         l_data = compute_data_loss(moments_at_bins, empirical)
 
-        # --- L_phys: gathered from per-GPU physics loss computed in DistributedPINNWrapper ---
-        l_phys = result["l_phys"].mean()
+        # --- L_phys: CME residuals at collocation points ---
+        l_phys = compute_physics_loss(raw_model, collocation_t, result)
 
         # --- L_fate: Cross-entropy at every time step ---
         l_fate = compute_fate_loss(result["fate_logits"], fate_targets)
@@ -252,15 +215,16 @@ def main():
     os.makedirs(args.checkpoint_dir, exist_ok=True)
 
     # --- Build frozen GRN matrix ---
+    # TODO: Replace with actual expressed TF/gene lists from your preprocessed data
+    # These would come from 01_run_palantir.py and 02_build_spatial.py outputs
     print("Loading frozen GRN matrix...")
-    expressed_genes = pd.read_csv(
-        "data/processed/expressed_genes.csv", header=None
-    )[0].tolist()
-    frozen_grn = build_frozen_grn_matrix(
-        tftg_path="src/data/frozen_databases/TFTGDB.csv",
-        expressed_tfs=expressed_genes,
-        expressed_target_genes=expressed_genes,
-    )
+    # frozen_grn = build_frozen_grn_matrix(
+    #     tftg_path="src/data/frozen_databases/TFTGDB.csv",
+    #     expressed_tfs=expressed_tfs,
+    #     expressed_target_genes=expressed_genes,
+    # )
+    # Placeholder until preprocessing scripts populate real gene lists
+    frozen_grn = torch.randn(config["num_tfs"], config["num_target_genes"])
 
     # --- Initialize model ---
     model = SpatialMechanisticModel(
@@ -274,7 +238,7 @@ def main():
 
     if torch.cuda.device_count() > 1:
         print(f"Using {torch.cuda.device_count()} GPUs via DataParallel")
-        model = nn.DataParallel(DistributedPINNWrapper(model))
+        model = nn.DataParallel(model)
 
     print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
 

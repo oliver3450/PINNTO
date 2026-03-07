@@ -1,0 +1,14 @@
+Starting Model Training on GPU Node: gnode21
+Job ID: 845462
+{"code":0,"message":"","data":{"pushid":"28112634","readkey":"SCTgxxodJz581gp","error":"SUCCESS","errno":0}}Step 3: Training Hybrid RNN-PINN Model on Fake Data...
+Training on: cuda
+Loading frozen GRN matrix...
+Model parameters: 195,894
+Loading dataset from: data/processed/fake_spatial.h5ad
+Dataset loaded: 400 beads, seq_len=50
+
+Starting training for 500 epochs
+  lambda_data=1.0, lambda_phys=0.1, lambda_fate=5.0
+  collocation_points=100, dt=0.02
+----------------------------------------------------------------------
+Epoch    1 | Total: 799552002.2400 | Data: 671.9776 | Phys: 7995513244.1600 | Fate: 2.3786 | LR: 1.00e-03 | beta_mean: 0.6925 | gamma_mean: 0.6990
