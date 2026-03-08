@@ -1,11 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=openst_velocyto
-#SBATCH --partition=CPU-64C256GB
-#SBATCH --qos=qos_cpu_64c256gb
+#SBATCH --partition=CPU-192C768GB
+#SBATCH --qos=qos_cpu_192c768gb
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=32
-#SBATCH --mem=128G
+#SBATCH --cpus-per-task=64
+#SBATCH --mem=256G
+#SBATCH --time=48:00:00
 #SBATCH --output=logs/velo_%j.out
 #SBATCH --error=logs/velo_%j.err
 
@@ -47,7 +48,7 @@ OUT_DIR="${PROJ_DIR}/velocyto_output"
 echo "Starting CRAM to BAM conversion at $(date)"
 
 # Samtools requires the original genome sequence to rebuild the BAM
-samtools view -b -T "${GENOME_FA}" -@ 32 -o "${BAM_FILE}" "${CRAM_FILE}"
+samtools view -b -T "${GENOME_FA}" -@ 64 -o "${BAM_FILE}" "${CRAM_FILE}"
 
 if [ $? -ne 0 ]; then
     echo "samtools conversion FAILED."
@@ -60,7 +61,9 @@ echo "Starting Velocyto processing at $(date)"
 
 # -c XC and -U XM tell Velocyto where to find Spacemake's spatial barcodes and UMIs
 velocyto run \
-    -@ 32 \
+    -@ 64 \
+    -b "/home/qukungroup/odorn/spatial_mechanistic_model/data/processed/whitelist.txt" \
+    -b "/home/qukungroup/odorn/spatial_mechanistic_model/data/processed/whitelist.txt" \
     -c XC \
     -U XM \
     -o "${OUT_DIR}" \

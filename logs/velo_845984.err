@@ -1,0 +1,4 @@
+Usage: velocyto run [OPTIONS] BAMFILE... GTFFILE
+Try 'velocyto run --help' for help.
+
+Error: Invalid value for 'BAMFILE...': File 'XC' does not exist.
