@@ -262,6 +262,12 @@ def main():
         expressed_target_genes=expressed_genes,
     )
 
+    # Override config with true matrix dimensions — the GRN intersection may differ
+    # from the static values in train_config.yaml
+    config["num_tfs"] = frozen_grn.shape[0]
+    config["num_target_genes"] = frozen_grn.shape[1]
+    print(f"Dynamic Architecture: {config['num_tfs']} TFs mapped to {config['num_target_genes']} Genes")
+
     # --- Initialize model ---
     model = SpatialMechanisticModel(
         input_spatial_dim=config["input_spatial_dim"],
