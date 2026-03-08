@@ -59,13 +59,10 @@ fi
 # --- Execution Step 2: Extract Spliced/Unspliced Counts ---
 echo "Starting Velocyto processing at $(date)"
 
-# -c XC and -U XM tell Velocyto where to find Spacemake's spatial barcodes and UMIs
+# Velocyto detects XC (barcode) and XM (UMI) tags natively from the Spacemake BAM
 velocyto run \
     -@ 64 \
     -b "/home/qukungroup/odorn/spatial_mechanistic_model/data/processed/whitelist.txt" \
-    -b "/home/qukungroup/odorn/spatial_mechanistic_model/data/processed/whitelist.txt" \
-    -c XC \
-    -U XM \
     -o "${OUT_DIR}" \
     "${BAM_FILE}" \
     "${GENOME_GTF}"
