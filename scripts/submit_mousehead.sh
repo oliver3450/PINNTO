@@ -26,7 +26,7 @@
 set -eo pipefail
 
 # --- Configuration ---
-H5AD="data/processed/mouse_brain.h5ad"
+H5AD="data/mouse_brain.h5ad"
 TRAIN_CONFIG="configs/train_config.yaml"
 LOSS_WEIGHTS="configs/loss_weights.yaml"
 PROJECT_DIR="/home/qukungroup/odorn/spatial_mechanistic_model"
