@@ -15,10 +15,7 @@ send_wechat_notification() {
     local job_name=$1
     local job_id=$2
     local status=$3
-
-    # Paste your actual key here
     SENDKEY="YOUR_SERVERCHAN_SENDKEY"
-
     curl -s -X POST "https://sctapi.ftqq.com/${SENDKEY}.send" \
         -d "title=Job ${status}: ${job_name}" \
         -d "desp=Job ID: ${job_id}%0A%0AStatus: ${status}%0A%0ACheck your logs for details." > /dev/null
@@ -28,7 +25,6 @@ send_wechat_notification() {
 source $HOME/miniconda3/etc/profile.d/conda.sh
 conda activate velocyto
 
-# Ensure logs directory exists (prevents silent failures)
 cd /home/qukungroup/odorn/spatial_mechanistic_model/scripts/
 mkdir -p logs
 
@@ -36,7 +32,6 @@ mkdir -p logs
 RAW_DIR="/home/qukungroup/odorn/spatial_mechanistic_model/data/raw"
 PROJ_DIR="${RAW_DIR}/openst_data/spacemake/projects/openst_demo"
 
-# CHANGE THESE:
 GENOME_FA="${RAW_DIR}/openst_data/GRCm39vM30.genome.fa"
 GENOME_GTF="${RAW_DIR}/openst_data/gencodevM30.annotation.gtf"
 
@@ -44,11 +39,11 @@ CRAM_FILE="${PROJ_DIR}/processed_data/openst_demo_e13_mouse_head/illumina/comple
 BAM_FILE="${PROJ_DIR}/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted.bam"
 OUT_DIR="${PROJ_DIR}/velocyto_output"
 
-# --- Execution Step 1: Decompress CRAM to BAM ---
+# --- Execution Step 1: Decompress CRAM to BAM (WITH STRICT TAG FILTERING) ---
 echo "Starting CRAM to BAM conversion at $(date)"
 
-# Samtools requires the original genome sequence to rebuild the BAM
-samtools view -b -T "${GENOME_FA}" -@ 64 -o "${BAM_FILE}" "${CRAM_FILE}"
+# The -d CB flag drops all reads lacking a cell barcode, fixing the Velocyto peek crash.
+samtools view -b -d CB -T "${GENOME_FA}" -@ 64 -o "${BAM_FILE}" "${CRAM_FILE}"
 
 if [ $? -ne 0 ]; then
     echo "samtools conversion FAILED."
@@ -59,20 +54,16 @@ fi
 # --- Execution Step 2: Extract Spliced/Unspliced Counts ---
 echo "Starting Velocyto processing at $(date)"
 
-# Velocyto detects XC (barcode) and XM (UMI) tags natively from the Spacemake BAM
+# Run purely on auto-discovery: no -b whitelist flags, no -c flags.
 velocyto run \
     -@ 64 \
-    -b "/home/qukungroup/odorn/spatial_mechanistic_model/data/processed/whitelist.txt" \
     -o "${OUT_DIR}" \
     "${BAM_FILE}" \
     "${GENOME_GTF}"
 
 if [ $? -eq 0 ]; then
     echo "Velocyto finished successfully at $(date)."
-    
-    # Cleanup the massive intermediate BAM file to save hard drive space
     rm "${BAM_FILE}"
-    
     send_wechat_notification "openst_velocyto" "$SLURM_JOB_ID" "completed"
 else
     echo "Velocyto FAILED at $(date)."
