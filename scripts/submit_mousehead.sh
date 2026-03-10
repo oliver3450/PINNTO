@@ -23,7 +23,7 @@
 #    summary.txt    — run metadata (job ID, GPU count, timing, etc.)
 # ============================================================================
 
-set -euo pipefail
+set -eo pipefail
 
 # --- Configuration ---
 H5AD="data/processed/mouse_brain.h5ad"
