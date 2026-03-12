@@ -4,9 +4,10 @@ import torch
 from typing import List, Tuple
 
 def build_frozen_grn_matrix(
-    tftg_path: str, 
-    expressed_tfs: List[str], 
-    expressed_target_genes: List[str]
+    tftg_path: str,
+    expressed_tfs: List[str],
+    expressed_target_genes: List[str],
+    return_names: bool = False,
 ) -> torch.Tensor:
     """
     Builds the W_TFTG matrix for the PINN's output projection layer.
@@ -14,31 +15,52 @@ def build_frozen_grn_matrix(
     """
     print(f"Loading TF-TG database from {tftg_path}...")
     df = pd.read_csv(tftg_path)
-    
-    # Filter the database to ONLY include TFs and Genes actually in your data
-    df = df[df['source'].isin(expressed_tfs) & df['target'].isin(expressed_target_genes)]
-    
+
+    # Normalise to uppercase for case-insensitive matching.
+    # TFTGDB uses human-style ALL-CAPS (e.g. "AATF").
+    # Mouse h5ad var['GeneName'] uses title-case (e.g. "Aatf").
+    # Uppercasing both sides resolves the mismatch without altering stored indices.
+    df_source_upper = df['source'].str.upper()
+    df_target_upper = df['target'].str.upper()
+    tfs_upper  = [g.upper() for g in expressed_tfs]
+    genes_upper = [g.upper() for g in expressed_target_genes]
+
+    # Filter: keep only edges where both endpoints are in the expressed gene sets
+    mask = df_source_upper.isin(tfs_upper) & df_target_upper.isin(genes_upper)
+    df_filtered = df[mask].copy()
+    df_filtered['source_up'] = df_source_upper[mask].values
+    df_filtered['target_up'] = df_target_upper[mask].values
+
     # Initialize an empty matrix of shape (Num_TFs, Num_Target_Genes)
     num_tfs = len(expressed_tfs)
     num_genes = len(expressed_target_genes)
     grn_matrix = np.zeros((num_tfs, num_genes), dtype=np.float32)
-    
-    # Create mapping dictionaries for fast indexing
-    tf_to_idx = {tf: i for i, tf in enumerate(expressed_tfs)}
-    gene_to_idx = {gene: i for i, gene in enumerate(expressed_target_genes)}
-    
-    # Populate the matrix with the interaction scores
-    for _, row in df.iterrows():
-        tf_idx = tf_to_idx[row['source']]
-        gene_idx = gene_to_idx[row['target']]
-        
-        # If your score is continuous, it uses it. If it's just '1', it acts as a binary mask.
-        grn_matrix[tf_idx, gene_idx] = float(row['score'])
-        
+
+    # Index maps using uppercase keys → original position in expressed lists
+    tf_to_idx   = {g.upper(): i for i, g in enumerate(expressed_tfs)}
+    gene_to_idx = {g.upper(): i for i, g in enumerate(expressed_target_genes)}
+
+    # Populate the matrix with interaction scores
+    for _, row in df_filtered.iterrows():
+        grn_matrix[tf_to_idx[row['source_up']], gene_to_idx[row['target_up']]] = \
+            float(row['score'])
+
+    sparsity = float((grn_matrix == 0).mean())
     print(f"Constructed W_TFTG Matrix: {num_tfs} TFs -> {num_genes} Target Genes")
-    print(f"Matrix Sparsity: {(grn_matrix == 0).mean() * 100:.2f}%")
-    
-    return torch.tensor(grn_matrix, dtype=torch.float32)
+    print(f"Matrix Sparsity: {sparsity * 100:.2f}%  ({len(df_filtered)} edges populated)")
+
+    assert sparsity < 1.0, (
+        f"GRN matrix is 100% sparse — no edges populated!\n"
+        f"  TFTGDB source sample: {df['source'].head(3).tolist()}\n"
+        f"  expressed_tfs sample: {expressed_tfs[:3]}\n"
+        f"  Hint: check that expressed_genes.csv contains gene *symbols* "
+        f"(e.g. 'Aatf'), not Ensembl IDs (e.g. 'ENSMUSG...')."
+    )
+
+    matrix = torch.tensor(grn_matrix, dtype=torch.float32)
+    if return_names:
+        return matrix, expressed_tfs, expressed_target_genes
+    return matrix
 
 
 def build_spatial_signaling_weights(

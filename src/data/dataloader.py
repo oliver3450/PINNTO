@@ -28,8 +28,15 @@ class SpatialTranscriptomicsDataset(Dataset):
         self.num_genes = num_genes
         self.num_fates = num_fates
 
-        # Spatial 2D coordinates from Spacemake/Open-ST
-        self.coords = self.adata.obsm['spatial']
+        # Spatial 2D coordinates — Open-ST uses 'X_xy_loc'/'xy_loc', Scanpy convention is 'spatial'
+        SPATIAL_KEYS = ["spatial", "X_xy_loc", "xy_loc", "X_spatial", "coordinates"]
+        spatial_key = next((k for k in SPATIAL_KEYS if k in self.adata.obsm), None)
+        if spatial_key is None:
+            raise KeyError(
+                f"No spatial coordinates found. Tried: {SPATIAL_KEYS}. "
+                f"Available: {list(self.adata.obsm.keys())}"
+            )
+        self.coords = self.adata.obsm[spatial_key]
 
         # Spliced = mature mRNA (M), Unspliced = nascent pre-mRNA (N)
         self.M = self.adata.layers['spliced'][:, :num_genes]
@@ -44,10 +51,82 @@ class SpatialTranscriptomicsDataset(Dataset):
         self.nn = NearestNeighbors(n_neighbors=seq_len).fit(self.coords)
         _, self.neighbors = self.nn.kneighbors(self.coords)
 
-        # Placeholder fate targets: uniform random Dirichlet-like soft probabilities
-        # Replace with Palantir outputs from 01_run_palantir.py once available
-        raw_fates = np.random.rand(self.adata.n_obs, seq_len, num_fates)
-        self.fate_targets = raw_fates / raw_fates.sum(axis=-1, keepdims=True)
+        # Compute per-moment scaling factors from a random bead sample.
+        # Used in compute_data_loss to give all 5 moment dimensions equal MSE weight.
+        self.moment_scales = self._compute_moment_scales(n_sample=2000)
+        print(f"Moment scales (std per dimension): {self.moment_scales.tolist()}")
+
+        # Fate targets: use Palantir outputs if available, otherwise random placeholders
+        if "palantir_fate_probs" in self.adata.obsm:
+            # Real fate probabilities from Palantir: (n_cells, n_fates)
+            cell_fates = self.adata.obsm["palantir_fate_probs"]
+            if hasattr(cell_fates, "values"):
+                cell_fates = cell_fates.values  # DataFrame -> numpy
+            self.num_fates = cell_fates.shape[1]
+            # Each cell's fate is broadcast to all sequence positions —
+            # the KNN neighbors inherit the center cell's fate target
+            self.fate_targets = np.tile(
+                cell_fates[:, np.newaxis, :], (1, seq_len, 1)
+            )  # (n_cells, seq_len, n_fates)
+            print(f"Using Palantir fate probabilities: {self.num_fates} terminal states")
+        else:
+            print("WARNING: No palantir_fate_probs found — using random placeholder fates")
+            raw_fates = np.random.rand(self.adata.n_obs, seq_len, num_fates)
+            self.fate_targets = raw_fates / raw_fates.sum(axis=-1, keepdims=True)
+
+    def _compute_moment_scales(self, n_sample: int = 2000) -> torch.Tensor:
+        """
+        Estimate the population std of each of the 5 empirical moment dimensions
+        from a random sample of beads.  Returns a (5,) float32 tensor:
+            [nanstd(nascent_mean), nanstd(mature_mean),
+             nanstd(nascent_var),  nanstd(mature_var),  nanstd(cov_nm)]
+
+        Used by compute_data_loss to normalise each moment dimension so all 5
+        contribute equally to L_data regardless of raw count scale.
+
+        Means use all n_sample beads (just raw count arrays — no KNN needed).
+        Variances use a KNN window subsample (1000 beads) to estimate spread.
+        cov_nm is computed empirically: Cov(N,M) = E[NM] - E[N]E[M] per gene per window.
+        """
+        n = min(n_sample, self.adata.n_obs)
+        rng = np.random.default_rng(seed=42)
+        idx = rng.choice(self.adata.n_obs, n, replace=False)
+
+        def safe_std(arr: np.ndarray) -> float:
+            """Nanstd across all elements; falls back to 1.0 if degenerate or all-NaN."""
+            s = float(np.nanstd(arr))
+            return s if s > 1e-6 else 1.0
+
+        # --- Means: raw count arrays, shape (n, G) ---
+        N_sample = self.N[idx].ravel()   # unspliced (nascent) counts
+        M_sample = self.M[idx].ravel()   # spliced (mature) counts
+
+        # --- Variances + Covariance: need KNN windows, use a smaller subsample ---
+        n_var_sample = min(1000, n)
+        var_idx = idx[:n_var_sample]
+
+        n_var_vals, m_var_vals, cov_vals = [], [], []
+        for i in var_idx:
+            N_win = self.N[self.neighbors[i]]   # (seq_len, G)
+            M_win = self.M[self.neighbors[i]]   # (seq_len, G)
+            n_var_vals.append(np.var(N_win, axis=0))
+            m_var_vals.append(np.var(M_win, axis=0))
+            # Cov(N,M) = E[NM] - E[N]E[M]: NaN where window is all-zero for that gene
+            cov_per_gene = (
+                np.mean(N_win * M_win, axis=0)
+                - np.mean(N_win, axis=0) * np.mean(M_win, axis=0)
+            )
+            cov_vals.append(cov_per_gene)
+
+        scales = torch.tensor([
+            safe_std(N_sample),                         # nascent_mean
+            safe_std(M_sample),                         # mature_mean
+            safe_std(np.concatenate(n_var_vals)),       # nascent_var
+            safe_std(np.concatenate(m_var_vals)),       # mature_var
+            safe_std(np.concatenate(cov_vals)),         # cov_nm — now computed, not hardcoded
+        ], dtype=torch.float32)
+
+        return scales
 
     def __len__(self):
         return self.adata.n_obs
@@ -74,8 +153,18 @@ class SpatialTranscriptomicsDataset(Dataset):
         nascent_var = torch.tensor(n_var, dtype=torch.float32)
         mature_var  = torch.tensor(m_var, dtype=torch.float32)
 
-        # Covariance placeholder: zero-initialized (no ground truth available)
-        cov_nm = torch.zeros_like(nascent_mean)
+        # Empirical covariance: Cov(N, M) = E[N·M] − E[N]·E[M] per gene across window.
+        # Genes where all counts are 0 in this window yield NaN → replace with 0.
+        cov_gene = (
+            np.mean(N_seq * M_seq, axis=0)
+            - np.mean(N_seq, axis=0) * np.mean(M_seq, axis=0)
+        )  # (G,)
+        cov_gene = np.nan_to_num(cov_gene, nan=0.0)
+        # Broadcast to (S, G) — same convention as the variance terms
+        cov_nm = torch.tensor(
+            np.broadcast_to(cov_gene[np.newaxis, :], (self.seq_len, self.num_genes)).copy(),
+            dtype=torch.float32,
+        )
 
         # Fate targets: (S, Num_Fates) soft probability vectors
         fate = torch.tensor(self.fate_targets[idx], dtype=torch.float32)

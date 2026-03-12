@@ -3,36 +3,51 @@ import torch.nn.functional as F
 
 def compute_cme_residuals(
     # 1. Continuous NN Predictions (The State)
-    nascent_mean: torch.Tensor, 
-    mature_mean: torch.Tensor, 
-    nascent_var: torch.Tensor, 
-    mature_var: torch.Tensor, 
+    nascent_mean: torch.Tensor,
+    mature_mean: torch.Tensor,
+    nascent_var: torch.Tensor,
+    mature_var: torch.Tensor,
     cov_nm: torch.Tensor,
-    
+
     # 2. Autograd Derivatives (The LHS of the ODEs)
-    d_nascent_mean_dt: torch.Tensor, 
-    d_mature_mean_dt: torch.Tensor, 
-    d_nascent_var_dt: torch.Tensor, 
-    d_mature_var_dt: torch.Tensor, 
+    d_nascent_mean_dt: torch.Tensor,
+    d_mature_mean_dt: torch.Tensor,
+    d_nascent_var_dt: torch.Tensor,
+    d_mature_var_dt: torch.Tensor,
     d_cov_nm_dt: torch.Tensor,
-    
+
     # 3. Upstream Forcing & Physical Constants (The RHS parameters)
     a_t: torch.Tensor,     # Burst Frequency (from RNN)
     b_t: torch.Tensor,     # Burst Size (from RNN)
     beta: torch.Tensor,    # Splicing rate (Trainable scalar/vector)
-    gamma: torch.Tensor    # Degradation rate (Trainable scalar/vector)
+    gamma: torch.Tensor,   # Degradation rate (Trainable scalar/vector)
+
+    # 4. Optional moment scales for dimensionless residuals
+    moment_scales: torch.Tensor = None,  # (5,) — per-dim std from dataset init
 ) -> torch.Tensor:
     """
     Computes the Mean Squared Error residuals for the 5-ODE CME system.
     All inputs must be PyTorch tensors with requires_grad=True.
     Shapes should ideally be (Batch_Collocation_Points, Num_Target_Genes).
+
+    If moment_scales is provided (shape (5,)), each ODE residual is divided by
+    the corresponding population std before squaring:
+        res_i = MSE((d_moment_i/dt) / scale_i,  RHS_i / scale_i)
+    This makes all 5 ODE residuals dimensionless and of comparable magnitude,
+    preventing the high-variance ODEs (e.g. mature_var ~12,000) from dominating.
     """
-    
+
+    # Unpack per-dimension scales (or default to 1.0 if not provided)
+    if moment_scales is not None:
+        s_n_mean, s_m_mean, s_n_var, s_m_var, s_cov = moment_scales.unbind()
+    else:
+        s_n_mean = s_m_mean = s_n_var = s_m_var = s_cov = 1.0
+
     # --- EQUATION 1 & 2: First Moments (Means) ---
     # The physical laws for average RNA abundance
     rhs_nascent_mean = (a_t * b_t) - (beta * nascent_mean)
     rhs_mature_mean = (beta * nascent_mean) - (gamma * mature_mean)
-    
+
     # --- EQUATION 3, 4, & 5: Second Moments (Variances & Covariance) ---
     # Two-stage bursting CME (Shahrezaei & Swain 2008, Xu et al. 2016)
     #
@@ -46,16 +61,17 @@ def compute_cme_residuals(
 
     # dCov(N,M)/dt = beta*Var(N) - (beta+gamma)*Cov(N,M)
     rhs_cov_nm = (beta * nascent_var) - ((beta + gamma) * cov_nm)
-    
-    # --- CALCULATE RESIDUALS (LHS vs RHS) ---
-    # If the NN perfectly obeys physics, all of these MSEs will be exactly 0.0
-    res_n_mean = F.mse_loss(d_nascent_mean_dt, rhs_nascent_mean)
-    res_m_mean = F.mse_loss(d_mature_mean_dt, rhs_mature_mean)
-    res_n_var  = F.mse_loss(d_nascent_var_dt, rhs_nascent_var)
-    res_m_var  = F.mse_loss(d_mature_var_dt, rhs_mature_var)
-    res_cov    = F.mse_loss(d_cov_nm_dt, rhs_cov_nm)
-    
-    # Return the unweighted sum of the physical residuals (L_phys)
+
+    # --- CALCULATE DIMENSIONLESS RESIDUALS ---
+    # Dividing both LHS and RHS by the same scale is equivalent to computing
+    # MSE(R/s, 0) where R = LHS - RHS, ensuring the loss is unit-free.
+    res_n_mean = F.mse_loss(d_nascent_mean_dt / s_n_mean, rhs_nascent_mean / s_n_mean)
+    res_m_mean = F.mse_loss(d_mature_mean_dt  / s_m_mean, rhs_mature_mean  / s_m_mean)
+    res_n_var  = F.mse_loss(d_nascent_var_dt  / s_n_var,  rhs_nascent_var  / s_n_var)
+    res_m_var  = F.mse_loss(d_mature_var_dt   / s_m_var,  rhs_mature_var   / s_m_var)
+    res_cov    = F.mse_loss(d_cov_nm_dt       / s_cov,    rhs_cov_nm       / s_cov)
+
+    # Return the unweighted sum of the dimensionless physical residuals (L_phys)
     total_physics_loss = res_n_mean + res_m_mean + res_n_var + res_m_var + res_cov
-    
+
     return total_physics_loss

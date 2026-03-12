@@ -73,14 +73,21 @@ echo "[Step 1/3] Extracting expressed gene list from ${H5AD}..."
 python -c "
 import scanpy as sc
 adata = sc.read_h5ad('${H5AD}')
-genes = adata.var_names.tolist()
+# Use gene symbols, not Ensembl IDs — TFTGDB matching requires symbols.
+if 'GeneName' in adata.var.columns:
+    genes = adata.var['GeneName'].tolist()
+    print('Using GeneName column (gene symbols)')
+else:
+    genes = adata.var_names.tolist()
+    print('WARNING: No GeneName column, using var_names (may be Ensembl IDs)')
+import os; os.makedirs('data/processed', exist_ok=True)
 with open('data/processed/expressed_genes.csv', 'w') as f:
     for g in genes:
-        f.write(g + '\n')
+        f.write(str(g) + '\n')
 print(f'Wrote {len(genes)} genes to data/processed/expressed_genes.csv')
+print(f'Sample: {genes[:5]}')
 print(f'Dataset: {adata.n_obs} cells x {adata.n_vars} genes')
 print(f'Layers: {list(adata.layers.keys())}')
-print(f'Spatial coords shape: {adata.obsm[\"spatial\"].shape}')
 "
 
 # --- Step 2: Snapshot Config ---
@@ -132,8 +139,6 @@ echo "End Time:         $(date)" >> "${RESULTS_DIR}/summary.txt"
 echo "Exit Status:      SUCCESS" >> "${RESULTS_DIR}/summary.txt"
 
 # Copy logs into results folder
-cp "logs/mousehead_${SLURM_JOB_ID}.out" "${RESULTS_DIR}/logs/" 2>/dev/null || true
-cp "logs/mousehead_${SLURM_JOB_ID}.err" "${RESULTS_DIR}/logs/" 2>/dev/null || true
 mkdir -p "${RESULTS_DIR}/logs"
 cp "logs/mousehead_${SLURM_JOB_ID}.out" "${RESULTS_DIR}/logs/" 2>/dev/null || true
 cp "logs/mousehead_${SLURM_JOB_ID}.err" "${RESULTS_DIR}/logs/" 2>/dev/null || true
