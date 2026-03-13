@@ -1,6 +1,0 @@
-# The dynamic lambdas for the Multi-Task Loss Function
-# L_total = (lambda_data * L_data) + (lambda_phys * L_phys) + (lambda_fate * L_fate)
-
-lambda_data: 2.0
-lambda_phys: 1.0
-lambda_fate: 1.0
