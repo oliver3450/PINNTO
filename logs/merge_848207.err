@@ -1,0 +1,16 @@
+/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/anndata/_core/anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates("var")
+Traceback (most recent call last):
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/merge_spatial_velo.py", line 18, in <module>
+    spatial_obs = pd.read_csv(spatial_csv, index_col=0)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+FileNotFoundError: [Errno 2] No such file or directory: '/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/dge/puck_collection.obs.csv'

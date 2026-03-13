@@ -1,0 +1,9 @@
+============================================
+  PINN Mouse Head Training
+  Job ID:      848342
+  Node:        gnode08
+  GPUs:        8
+  Results:     results/mousehead_20260310_175117_job848342
+  Dataset:     data/processed/mouse_brain.h5ad
+  Start:       2026年 03月 10日 星期二 17:51:18 CST
+============================================

@@ -1,0 +1,29 @@
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_simple.py:391: RuntimeWarning: invalid value encountered in log1p
+  np.log1p(x, out=x)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: If you pass `n_top_genes`, all cutoffs are ignored.
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_pca/__init__.py:226: FutureWarning: Argument `use_highly_variable` is deprecated, consider using the mask argument. Use_highly_variable=True can be called through mask_var="highly_variable". Use_highly_variable=False can be called through mask_var=None
+  mask_var_param, mask_var = _handle_mask_var(
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/palantir/core.py:814: UserWarning: Some of the cells were unreachable. Consider increasing the k for 
+             nearest neighbor graph construction.
+  warnings.warn(
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 368, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 259, in main
+    frozen_grn = build_frozen_grn_matrix(
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/../src/data/regulatory_networks.py", line 17, in build_frozen_grn_matrix
+    df = pd.read_csv(tftg_path)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+FileNotFoundError: [Errno 2] No such file or directory: 'src/data/frozen_databases/TFTGDB.csv'

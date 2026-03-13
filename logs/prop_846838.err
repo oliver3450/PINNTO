@@ -1,0 +1,5 @@
+/var/spool/slurmd/job846838/slurm_script: line 13: /home/qukungroup/odorn/minidconda3/etc/profile.d/conda.sh: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+python: can't open file '/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/submit_02_propcheck.py': [Errno 2] No such file or directory

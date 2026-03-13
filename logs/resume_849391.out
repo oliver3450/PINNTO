@@ -1,0 +1,3 @@
+Using explicitly provided checkpoint directory: results/mousehead_20260310_175405_job848346/checkpoints
+ERROR: best_model.pt not found in results/mousehead_20260310_175405_job848346/checkpoints
+       Available files:

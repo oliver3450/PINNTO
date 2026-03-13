@@ -1,0 +1,2 @@
+/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/scvelo/preprocessing/utils.py:705: DeprecationWarning: `log1p` is deprecated since scVelo v0.3.0 and will be removed in a future version. Please use `log1p` from `scanpy.pp` instead.
+  log1p(adata)

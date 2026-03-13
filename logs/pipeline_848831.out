@@ -1,0 +1,11 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      848831
+  Node:        gnode15
+  GPUs:        8
+  Results:     results/pipeline_20260311_090047_job848831
+  Start:       2026年 03月 11日 星期三 09:00:47 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================

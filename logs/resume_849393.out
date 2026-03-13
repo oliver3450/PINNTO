@@ -1,0 +1,38 @@
+Auto-discovered latest checkpoint directory: results/pipeline_20260311_173150_job849328/checkpoints
+============================================
+  PINN Mouse Head — Resume Training
+  Job ID:      849393
+  Node:        gnode05
+  GPUs:        8
+  Resume from: results/pipeline_20260311_173150_job849328/checkpoints/best_model.pt
+  Results:     results/resume_20260311_183357_job849393
+  Dataset:     data/mouse_brain.h5ad
+  Start:       2026年 03月 11日 星期三 18:33:58 CST
+============================================
+
+Checkpoint metadata:
+  Saved at epoch:  332
+  Best total loss: 9.110633
+  Has scheduler:   False
+  Moment scales:   tensor([   274.3021,    200.9104, 122489.7891,  86525.6641,  22392.9023])
+
+Saving config snapshot...
+
+Starting resumed training...
+============================================
+Training on: cuda
+Loading frozen GRN matrix...
+Loading TF-TG database from src/data/frozen_databases/TFTGDB.csv...
+Constructed W_TFTG Matrix: 117 TFs -> 117 Target Genes
+Matrix Sparsity: 98.53%  (201 edges populated)
+Dynamic Architecture: 117 TFs -> 117 Genes, 2 Fates
+Loading dataset from: data/mouse_brain.h5ad
+Moment scales (std per dimension): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+WARNING: No palantir_fate_probs found — using random placeholder fates
+Dataset loaded: 4,628 beads, seq_len=50
+Moment scales (per-dim std): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using 8 GPUs via DataParallel
+Model parameters: 154,860
+
+Resuming from checkpoint: results/pipeline_20260311_173150_job849328/checkpoints/best_model.pt
+FAILED at 2026年 03月 11日 星期三 18:35:06 CST

@@ -1,0 +1,51 @@
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_simple.py:391: RuntimeWarning: invalid value encountered in log1p
+  np.log1p(x, out=x)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: If you pass `n_top_genes`, all cutoffs are ignored.
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py:81: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  adata.var["highly_variable"].iloc[top_idx] = True
+/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py:81: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  adata.var["highly_variable"].iloc[top_idx] = True
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_pca/__init__.py:226: FutureWarning: Argument `use_highly_variable` is deprecated, consider using the mask argument. Use_highly_variable=True can be called through mask_var="highly_variable". Use_highly_variable=False can be called through mask_var=None
+  mask_var_param, mask_var = _handle_mask_var(
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 173, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 169, in main
+    run_palantir_pipeline(args)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 85, in run_palantir_pipeline
+    sc.tl.pca(adata, n_comps=args.n_components, use_highly_variable=True)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_pca/__init__.py", line 349, in pca
+    x_pca = pca_.fit_transform(x)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/utils/_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/base.py", line 1365, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/decomposition/_pca.py", line 466, in fit_transform
+    U, S, _, X, x_is_centered, xp = self._fit(X)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/decomposition/_pca.py", line 503, in _fit
+    X = validate_data(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/utils/validation.py", line 2954, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/utils/validation.py", line 1105, in check_array
+    _assert_all_finite(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/utils/validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/sklearn/utils/validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input X contains NaN.
+PCA does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values

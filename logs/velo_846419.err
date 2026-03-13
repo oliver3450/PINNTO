@@ -1,0 +1,21 @@
+/var/spool/slurmd/job846419/slurm_script: line 53: [: -ne: unary operator expected
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/bin/velocyto", line 11, in <module>
+    sys.exit(cli())
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/click/core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/click/core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/click/core.py", line 1697, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/click/core.py", line 1443, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/click/core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/velocyto/commands/run.py", line 113, in run
+    return _run(bamfile=bamfile, gtffile=gtffile, bcfile=bcfile, outputfolder=outputfolder,
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/velocyto/commands/_run.py", line 212, in _run
+    exincounter.mark_up_introns(bamfile=bamfile, multimap=multimap)
+  File "/home/qukungroup/odorn/miniconda3/envs/velocyto/lib/python3.9/site-packages/velocyto/counter.py", line 676, in mark_up_introns
+    raise IOError(f"Input .bam file should be chromosome-sorted. (Hint: use `samtools sort {bamfile}`)")
+OSError: Input .bam file should be chromosome-sorted. (Hint: use `samtools sort ('/home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted.bam',)`)

@@ -1,0 +1,135 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      849328
+  Node:        gnode05
+  GPUs:        8
+  Results:     results/pipeline_20260311_173150_job849328
+  Start:       2026年 03月 11日 星期三 17:31:50 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================
+Reading data/mouse_brain.h5ad ...
+  4,628 cells x 117 genes
+  After filtering: 4,628 cells x 117 genes
+  117 HVGs selected for Palantir
+  PCA: 30 components
+Computing diffusion maps ...
+  Diffusion maps: 10 components
+  Multi-scale space: (4628, 3)
+Auto-detected root cell: 2554 (DC1 = -0.0059)
+Running Palantir (pseudotime + fate probabilities) ...
+Sampling and flocking waypoints...
+Time for determining waypoints: 0.00013712247212727864 minutes
+Determining pseudotime...
+Shortest path distances using 30-nearest neighbor graph...
+Time for shortest paths: 0.04659507671991984 minutes
+Iteratively refining the pseudotime...
+Correlation at iteration 1: 1.0000
+Entropy and branch probabilities...
+Markov chain construction...
+Identification of terminal states...
+Computing fundamental matrix and absorption probabilities...
+Project results to all cells...
+  Pseudotime range: [0.000, 1.000]
+  Terminal states (3): ['2285', '3739', '5277']
+
+Saving augmented AnnData to data/processed/palantir_adata.h5ad ...
+  Done. 4,628 cells, 3 terminal fates.
+
+--- Palantir Summary ---
+  Root cell:        2554
+  Terminal states:  ['2285', '3739', '5277']
+  Pseudotime mean:  0.538
+  Entropy mean:     0.336
+  Fate prob shape:  (4628, 3)
+Palantir complete at 2026年 03月 11日 星期三 17:32:03 CST
+
+[Step 2/4] Building training-ready h5ad...
+============================================
+Loading base h5ad: data/mouse_brain.h5ad
+  Base: 4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Renaming obsm['X_xy_loc'] -> obsm['spatial']
+  Spatial coords: (4628, 2) (from 'X_xy_loc')
+
+Merging Palantir results from: data/processed/palantir_adata.h5ad
+  Common cells: 4,628 / 4,628
+  Palantir merged: pseudotime + 3 fate probabilities
+
+  Gene filtering: 117 -> 117 expressed genes
+  Using var['GeneName'] column for expressed_genes.csv (gene symbols)
+  Wrote 117 genes to data/processed/expressed_genes.csv  (sample: ['Apela', 'Bambi', 'Bmp4'])
+
+Saving training-ready h5ad to data/processed/spatial_adata.h5ad
+
+--- Training Data Summary ---
+  Cells:          4,628
+  Genes:          117
+  Spatial dim:    2
+  Layers:         ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Pseudotime:     [0.000, 1.000] (mean=0.538)
+  Fate probs:     (4628, 3)
+  Output:         data/processed/spatial_adata.h5ad
+Spatial data built at 2026年 03月 11日 星期三 17:32:06 CST
+
+[Step 3/4] Saving config snapshot...
+
+[Step 4/4] Starting PINN training...
+============================================
+Training on: cuda
+Loading frozen GRN matrix...
+Loading TF-TG database from src/data/frozen_databases/TFTGDB.csv...
+Constructed W_TFTG Matrix: 117 TFs -> 117 Target Genes
+Matrix Sparsity: 98.53%  (201 edges populated)
+Detected 3 terminal fates from Palantir
+Dynamic Architecture: 117 TFs -> 117 Genes, 3 Fates
+Loading dataset from: data/processed/spatial_adata.h5ad
+Moment scales (std per dimension): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using Palantir fate probabilities: 3 terminal states
+Dataset loaded: 4,628 beads, seq_len=50
+Moment scales (per-dim std): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using 8 GPUs via DataParallel
+Model parameters: 154,978
+
+Starting training for 500 epochs
+  lambda_data=2.0, lambda_phys=1.0, lambda_fate=1.0
+  collocation_points=104, dt=0.02
+----------------------------------------------------------------------
+Epoch    1 | Total: 107.5634 | Data: 5.0882 | Phys: 89.0413 | Fate: 8.3455 | LR: 1.00e-03 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   10 | Total: 10.6320 | Data: 4.4631 | Phys: 0.3043 | Fate: 1.4015 | LR: 9.99e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   20 | Total: 10.3843 | Data: 4.4523 | Phys: 0.3217 | Fate: 1.1580 | LR: 9.96e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   30 | Total: 10.4105 | Data: 4.4145 | Phys: 0.3320 | Fate: 1.2496 | LR: 9.91e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   40 | Total: 10.8210 | Data: 4.4357 | Phys: 0.3307 | Fate: 1.6189 | LR: 9.84e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   50 | Total: 10.8531 | Data: 4.5695 | Phys: 0.2580 | Fate: 1.4561 | LR: 9.76e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   60 | Total: 10.5786 | Data: 4.5314 | Phys: 0.2763 | Fate: 1.2395 | LR: 9.65e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   70 | Total: 10.5633 | Data: 4.5118 | Phys: 0.2819 | Fate: 1.2578 | LR: 9.52e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   80 | Total: 10.6470 | Data: 4.5033 | Phys: 0.2839 | Fate: 1.3563 | LR: 9.38e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch   90 | Total: 10.5340 | Data: 4.4763 | Phys: 0.2925 | Fate: 1.2889 | LR: 9.22e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+Epoch  100 | Total: 10.5606 | Data: 4.4630 | Phys: 0.2991 | Fate: 1.3354 | LR: 9.05e-04 | beta_mean: 0.6956 | gamma_mean: 0.6913
+----------------------------------------------------------------------
+Phase 2: raw_beta / raw_gamma unfrozen — kinetic rates now trainable
+----------------------------------------------------------------------
+Epoch  110 | Total: 10.4226 | Data: 4.4034 | Phys: 0.2847 | Fate: 1.3311 | LR: 8.85e-04 | beta_mean: 0.6736 | gamma_mean: 0.6515
+Epoch  120 | Total: 10.1938 | Data: 4.3337 | Phys: 0.2621 | Fate: 1.2644 | LR: 8.65e-04 | beta_mean: 0.6556 | gamma_mean: 0.6217
+Epoch  130 | Total: 10.0848 | Data: 4.2890 | Phys: 0.2342 | Fate: 1.2726 | LR: 8.42e-04 | beta_mean: 0.6411 | gamma_mean: 0.6012
+Epoch  140 | Total: 10.0408 | Data: 4.2262 | Phys: 0.1939 | Fate: 1.3944 | LR: 8.19e-04 | beta_mean: 0.6259 | gamma_mean: 0.5867
+Epoch  150 | Total: 9.8850 | Data: 4.1878 | Phys: 0.1688 | Fate: 1.3406 | LR: 7.94e-04 | beta_mean: 0.6155 | gamma_mean: 0.5750
+Epoch  160 | Total: 9.7275 | Data: 4.1768 | Phys: 0.1356 | Fate: 1.2383 | LR: 7.68e-04 | beta_mean: 0.5936 | gamma_mean: 0.5582
+Epoch  170 | Total: 9.6030 | Data: 4.1498 | Phys: 0.1109 | Fate: 1.1927 | LR: 7.41e-04 | beta_mean: 0.5886 | gamma_mean: 0.5441
+Epoch  180 | Total: 9.5722 | Data: 4.1369 | Phys: 0.0898 | Fate: 1.2085 | LR: 7.13e-04 | beta_mean: 0.5814 | gamma_mean: 0.5288
+Epoch  190 | Total: 9.5461 | Data: 4.1231 | Phys: 0.0777 | Fate: 1.2223 | LR: 6.84e-04 | beta_mean: 0.5770 | gamma_mean: 0.5132
+Epoch  200 | Total: 9.4650 | Data: 4.1260 | Phys: 0.0661 | Fate: 1.1470 | LR: 6.55e-04 | beta_mean: 0.5715 | gamma_mean: 0.4963
+Epoch  210 | Total: 9.4747 | Data: 4.1117 | Phys: 0.0586 | Fate: 1.1928 | LR: 6.25e-04 | beta_mean: 0.5640 | gamma_mean: 0.4773
+Epoch  220 | Total: 9.4428 | Data: 4.1179 | Phys: 0.0496 | Fate: 1.1573 | LR: 5.94e-04 | beta_mean: 0.5523 | gamma_mean: 0.4587
+Epoch  230 | Total: 9.3333 | Data: 4.1053 | Phys: 0.0424 | Fate: 1.0803 | LR: 5.63e-04 | beta_mean: 0.5393 | gamma_mean: 0.4409
+Epoch  240 | Total: 9.4040 | Data: 4.1070 | Phys: 0.0390 | Fate: 1.1509 | LR: 5.32e-04 | beta_mean: 0.5343 | gamma_mean: 0.4274
+Epoch  250 | Total: 9.3912 | Data: 4.0984 | Phys: 0.0327 | Fate: 1.1617 | LR: 5.00e-04 | beta_mean: 0.5275 | gamma_mean: 0.4131
+Epoch  260 | Total: 9.4114 | Data: 4.1528 | Phys: 0.0311 | Fate: 1.0746 | LR: 4.69e-04 | beta_mean: 0.5165 | gamma_mean: 0.3964
+Epoch  270 | Total: 9.3032 | Data: 4.0924 | Phys: 0.0252 | Fate: 1.0933 | LR: 4.38e-04 | beta_mean: 0.5070 | gamma_mean: 0.3836
+Epoch  280 | Total: 9.2463 | Data: 4.0913 | Phys: 0.0229 | Fate: 1.0408 | LR: 4.07e-04 | beta_mean: 0.5023 | gamma_mean: 0.3723
+Epoch  290 | Total: 9.2413 | Data: 4.0914 | Phys: 0.0205 | Fate: 1.0380 | LR: 3.76e-04 | beta_mean: 0.4944 | gamma_mean: 0.3599
+Epoch  300 | Total: 9.2279 | Data: 4.0860 | Phys: 0.0188 | Fate: 1.0371 | LR: 3.46e-04 | beta_mean: 0.4870 | gamma_mean: 0.3492
+Epoch  310 | Total: 9.2303 | Data: 4.0856 | Phys: 0.0170 | Fate: 1.0422 | LR: 3.17e-04 | beta_mean: 0.4829 | gamma_mean: 0.3415
+Epoch  320 | Total: 9.2718 | Data: 4.0870 | Phys: 0.0155 | Fate: 1.0823 | LR: 2.88e-04 | beta_mean: 0.4782 | gamma_mean: 0.3328
+Epoch  330 | Total: 9.1555 | Data: 4.0522 | Phys: 0.0173 | Fate: 1.0339 | LR: 2.60e-04 | beta_mean: 0.4734 | gamma_mean: 0.3241

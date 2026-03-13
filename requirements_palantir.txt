@@ -1,0 +1,9 @@
+# requirements_palantir.txt — Preprocessing environment (palantir conda env)
+# Install: pip install -r requirements_palantir.txt
+
+scanpy
+palantir
+numpy
+pandas
+scipy
+loompy

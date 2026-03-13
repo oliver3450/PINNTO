@@ -1,0 +1,62 @@
+Auto-discovered latest checkpoint directory: results/pipeline_20260311_173150_job849328/checkpoints
+============================================
+  PINN Mouse Head — Resume Training
+  Job ID:      850056
+  Node:        gnode14
+  GPUs:        8
+  Resume from: results/pipeline_20260311_173150_job849328/checkpoints/best_model.pt
+  Results:     results/resume_20260312_121943_job850056
+  Dataset:     data/mouse_brain.h5ad
+  Start:       2026年 03月 12日 星期四 12:19:43 CST
+============================================
+
+Checkpoint metadata:
+  Saved at epoch:  332
+  Best total loss: 9.110633
+  Has scheduler:   False
+  Moment scales:   tensor([   274.3021,    200.9104, 122489.7891,  86525.6641,  22392.9023])
+
+Saving config snapshot...
+
+Starting resumed training...
+============================================
+Training on: cuda
+
+Pre-loading checkpoint for architecture alignment: results/pipeline_20260311_173150_job849328/checkpoints/best_model.pt
+  Architecture overrides applied:
+    num_tfs=117, num_target_genes=117, num_terminal_fates=3, input_spatial_dim=2
+  Will resume from epoch 333
+Loading frozen GRN matrix...
+Loading TF-TG database from src/data/frozen_databases/TFTGDB.csv...
+Constructed W_TFTG Matrix: 117 TFs -> 117 Target Genes
+Matrix Sparsity: 98.53%  (201 edges populated)
+Dynamic Architecture: 117 TFs -> 117 Genes, 3 Fates
+Loading dataset from: data/mouse_brain.h5ad
+Moment scales (std per dimension): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+WARNING: No palantir_fate_probs found — using random placeholder fates
+Dataset loaded: 4,628 beads, seq_len=50
+Moment scales (per-dim std): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using 8 GPUs via DataParallel
+Model parameters: 154,978
+
+Loading weights and optimizer state from checkpoint...
+  No scheduler_state_dict found — fast-forwarded 332 steps.
+  Resumed at epoch 333  |  best_loss so far: 9.1106
+
+Starting training for 500 epochs
+  lambda_data=2.0, lambda_phys=1.0, lambda_fate=1.0
+  collocation_points=104, dt=0.02
+----------------------------------------------------------------------
+Epoch  340 | Total: 93195.5349 | Data: 46597.1309 | Phys: 0.0152 | Fate: 1.2579 | LR: 5.98e-05 | beta_mean: 0.4725 | gamma_mean: 0.3222
+Epoch  350 | Total: 92649.0098 | Data: 46323.8661 | Phys: 0.0162 | Fate: 1.2618 | LR: 5.32e-05 | beta_mean: 0.4725 | gamma_mean: 0.3222
+Epoch  360 | Total: 92330.0041 | Data: 46164.3773 | Phys: 0.0169 | Fate: 1.2327 | LR: 4.69e-05 | beta_mean: 0.4725 | gamma_mean: 0.3221
+Epoch  370 | Total: 92136.7105 | Data: 46067.7424 | Phys: 0.0174 | Fate: 1.2097 | LR: 4.10e-05 | beta_mean: 0.4725 | gamma_mean: 0.3221
+Epoch  380 | Total: 92080.1762 | Data: 46039.4827 | Phys: 0.0175 | Fate: 1.1943 | LR: 3.53e-05 | beta_mean: 0.4724 | gamma_mean: 0.3221
+Epoch  390 | Total: 91991.8583 | Data: 45995.3283 | Phys: 0.0178 | Fate: 1.1842 | LR: 3.01e-05 | beta_mean: 0.4724 | gamma_mean: 0.3221
+Epoch  400 | Total: 91869.9260 | Data: 45934.3660 | Phys: 0.0180 | Fate: 1.1760 | LR: 2.52e-05 | beta_mean: 0.4724 | gamma_mean: 0.3221
+Epoch  410 | Total: 91787.7756 | Data: 45893.2946 | Phys: 0.0181 | Fate: 1.1695 | LR: 2.07e-05 | beta_mean: 0.4724 | gamma_mean: 0.3221
+Epoch  420 | Total: 91824.2012 | Data: 45911.5087 | Phys: 0.0183 | Fate: 1.1652 | LR: 1.67e-05 | beta_mean: 0.4724 | gamma_mean: 0.3221
+Epoch  430 | Total: 91819.9870 | Data: 45909.4036 | Phys: 0.0185 | Fate: 1.1612 | LR: 1.31e-05 | beta_mean: 0.4723 | gamma_mean: 0.3220
+Epoch  440 | Total: 91683.7231 | Data: 45841.2735 | Phys: 0.0186 | Fate: 1.1582 | LR: 9.90e-06 | beta_mean: 0.4723 | gamma_mean: 0.3220
+Epoch  450 | Total: 91735.1135 | Data: 45866.9698 | Phys: 0.0186 | Fate: 1.1558 | LR: 7.20e-06 | beta_mean: 0.4723 | gamma_mean: 0.3220
+Epoch  460 | Total: 91742.7355 | Data: 45870.7821 | Phys: 0.0186 | Fate: 1.1542 | LR: 4.98e-06 | beta_mean: 0.4723 | gamma_mean: 0.3220

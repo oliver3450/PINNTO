@@ -1,0 +1,12 @@
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_simple.py:391: RuntimeWarning: invalid value encountered in log1p
+  np.log1p(x, out=x)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: If you pass `n_top_genes`, all cutoffs are ignored.
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_pca/__init__.py:226: FutureWarning: Argument `use_highly_variable` is deprecated, consider using the mask argument. Use_highly_variable=True can be called through mask_var="highly_variable". Use_highly_variable=False can be called through mask_var=None
+  mask_var_param, mask_var = _handle_mask_var(
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/palantir/core.py:814: UserWarning: Some of the cells were unreachable. Consider increasing the k for 
+             nearest neighbor graph construction.
+  warnings.warn(
+slurmstepd: error: *** JOB 849328 ON gnode05 CANCELLED AT 2026-03-11T18:25:58 ***

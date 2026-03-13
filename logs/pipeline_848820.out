@@ -1,0 +1,53 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      848820
+  Node:        gnode15
+  GPUs:        8
+  Results:     results/pipeline_20260311_085026_job848820
+  Start:       2026年 03月 11日 星期三 08:50:26 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================
+Reading data/mouse_brain.h5ad ...
+  4,628 cells x 117 genes
+  After filtering: 4,628 cells x 117 genes
+  117 HVGs selected for Palantir
+  PCA: 30 components
+Computing diffusion maps ...
+  Diffusion maps: 10 components
+  Multi-scale space: (4628, 3)
+Auto-detected root cell: 2554 (DC1 = -0.0059)
+Running Palantir (pseudotime + fate probabilities) ...
+Sampling and flocking waypoints...
+Time for determining waypoints: 0.00014478762944539387 minutes
+Determining pseudotime...
+Shortest path distances using 30-nearest neighbor graph...
+Time for shortest paths: 0.047114829222361244 minutes
+Iteratively refining the pseudotime...
+Correlation at iteration 1: 1.0000
+Entropy and branch probabilities...
+Markov chain construction...
+Identification of terminal states...
+Computing fundamental matrix and absorption probabilities...
+Project results to all cells...
+  Pseudotime range: [0.000, 1.000]
+  Terminal states (3): ['2285', '3739', '5277']
+
+Saving augmented AnnData to data/processed/palantir_adata.h5ad ...
+  Done. 4,628 cells, 3 terminal fates.
+
+--- Palantir Summary ---
+  Root cell:        2554
+  Terminal states:  ['2285', '3739', '5277']
+  Pseudotime mean:  0.538
+  Entropy mean:     0.336
+  Fate prob shape:  (4628, 3)
+Palantir complete at 2026年 03月 11日 星期三 08:50:59 CST
+
+[Step 2/4] Building training-ready h5ad...
+============================================
+Loading base h5ad: data/mouse_brain.h5ad
+  Base: 4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+FAILED at 2026年 03月 11日 星期三 08:51:03 CST

@@ -1,0 +1,20 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      848808
+  Node:        gnode15
+  GPUs:        8
+  Results:     results/pipeline_20260311_074333_job848808
+  Start:       2026年 03月 11日 星期三 07:43:33 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================
+Reading data/mouse_brain.h5ad ...
+  4,628 cells x 117 genes
+  After filtering: 4,628 cells x 117 genes
+  HVG failed (ValueError: Bin edges must be unique: Index([nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan],
+      dtype='float64').
+You can drop duplicate edges by setting the 'duplicates' kwarg), using top-117 by variance
+  117 genes selected by variance
+FAILED at 2026年 03月 11日 星期三 07:43:38 CST

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/diagnostics/02_plot_kinetics.py", line 63, in <module>
+    main()
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/diagnostics/02_plot_kinetics.py", line 39, in main
+    model.load_state_dict(clean_state_dict, strict=False)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 2593, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for SpatialMechanisticModel:
+	size mismatch for moment_mlp.hidden_network.0.weight: copying a param with shape torch.Size([128, 1]) from checkpoint, the shape in current model is torch.Size([128, 51]).

@@ -1,0 +1,10 @@
+# requirements_gdl.txt — Training environment (gdl_env conda env)
+# Install: pip install -r requirements_gdl.txt
+
+torch>=2.0
+numpy
+pandas
+scipy
+scikit-learn
+scanpy
+pyyaml

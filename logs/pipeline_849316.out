@@ -1,0 +1,102 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      849316
+  Node:        gnode05
+  GPUs:        8
+  Results:     results/pipeline_20260311_172016_job849316
+  Start:       2026年 03月 11日 星期三 17:20:16 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================
+Reading data/mouse_brain.h5ad ...
+  4,628 cells x 117 genes
+  After filtering: 4,628 cells x 117 genes
+  117 HVGs selected for Palantir
+  PCA: 30 components
+Computing diffusion maps ...
+  Diffusion maps: 10 components
+  Multi-scale space: (4628, 3)
+Auto-detected root cell: 2554 (DC1 = -0.0059)
+Running Palantir (pseudotime + fate probabilities) ...
+Sampling and flocking waypoints...
+Time for determining waypoints: 0.0001398921012878418 minutes
+Determining pseudotime...
+Shortest path distances using 30-nearest neighbor graph...
+Time for shortest paths: 0.04684667587280274 minutes
+Iteratively refining the pseudotime...
+Correlation at iteration 1: 1.0000
+Entropy and branch probabilities...
+Markov chain construction...
+Identification of terminal states...
+Computing fundamental matrix and absorption probabilities...
+Project results to all cells...
+  Pseudotime range: [0.000, 1.000]
+  Terminal states (3): ['2285', '3739', '5277']
+
+Saving augmented AnnData to data/processed/palantir_adata.h5ad ...
+  Done. 4,628 cells, 3 terminal fates.
+
+--- Palantir Summary ---
+  Root cell:        2554
+  Terminal states:  ['2285', '3739', '5277']
+  Pseudotime mean:  0.538
+  Entropy mean:     0.336
+  Fate prob shape:  (4628, 3)
+Palantir complete at 2026年 03月 11日 星期三 17:21:01 CST
+
+[Step 2/4] Building training-ready h5ad...
+============================================
+Loading base h5ad: data/mouse_brain.h5ad
+  Base: 4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Renaming obsm['X_xy_loc'] -> obsm['spatial']
+  Spatial coords: (4628, 2) (from 'X_xy_loc')
+
+Merging Palantir results from: data/processed/palantir_adata.h5ad
+  Common cells: 4,628 / 4,628
+  Palantir merged: pseudotime + 3 fate probabilities
+
+  Gene filtering: 117 -> 117 expressed genes
+  Using var['GeneName'] column for expressed_genes.csv (gene symbols)
+  Wrote 117 genes to data/processed/expressed_genes.csv  (sample: ['Apela', 'Bambi', 'Bmp4'])
+
+Saving training-ready h5ad to data/processed/spatial_adata.h5ad
+
+--- Training Data Summary ---
+  Cells:          4,628
+  Genes:          117
+  Spatial dim:    2
+  Layers:         ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Pseudotime:     [0.000, 1.000] (mean=0.538)
+  Fate probs:     (4628, 3)
+  Output:         data/processed/spatial_adata.h5ad
+Spatial data built at 2026年 03月 11日 星期三 17:21:04 CST
+
+[Step 3/4] Saving config snapshot...
+
+[Step 4/4] Starting PINN training...
+============================================
+Training on: cuda
+Loading frozen GRN matrix...
+Loading TF-TG database from src/data/frozen_databases/TFTGDB.csv...
+Constructed W_TFTG Matrix: 117 TFs -> 117 Target Genes
+Matrix Sparsity: 98.53%  (201 edges populated)
+Detected 3 terminal fates from Palantir
+Dynamic Architecture: 117 TFs -> 117 Genes, 3 Fates
+Loading dataset from: data/processed/spatial_adata.h5ad
+Moment scales (std per dimension): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using Palantir fate probabilities: 3 terminal states
+Dataset loaded: 4,628 beads, seq_len=50
+Moment scales (per-dim std): [274.30206298828125, 200.91038513183594, 122489.7890625, 86525.6640625, 22392.90234375]
+Using 8 GPUs via DataParallel
+Model parameters: 154,978
+
+Starting training for 500 epochs
+  lambda_data=2.0, lambda_phys=1.0, lambda_fate=1.0
+  collocation_points=104, dt=0.02
+----------------------------------------------------------------------
+Epoch    1 | Total: 73.5301 | Data: 5.1386 | Phys: 59.0080 | Fate: 4.2449 | LR: 1.00e-03 | beta_mean: 0.6956 | gamma_mean: 0.6964
+Epoch   10 | Total: 11.1156 | Data: 4.7214 | Phys: 0.1867 | Fate: 1.4861 | LR: 9.99e-04 | beta_mean: 0.6581 | gamma_mean: 0.6478
+Epoch   20 | Total: 10.6160 | Data: 4.6316 | Phys: 0.1836 | Fate: 1.1692 | LR: 9.96e-04 | beta_mean: 0.6409 | gamma_mean: 0.6210
+Epoch   30 | Total: 10.3604 | Data: 4.4937 | Phys: 0.1833 | Fate: 1.1898 | LR: 9.91e-04 | beta_mean: 0.6274 | gamma_mean: 0.5944

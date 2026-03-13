@@ -1,0 +1,18 @@
+============================================
+  PINN Full Pipeline
+  Job ID:      848809
+  Node:        gnode15
+  GPUs:        8
+  Results:     results/pipeline_20260311_074459_job848809
+  Start:       2026年 03月 11日 星期三 07:44:59 CST
+============================================
+
+[Step 1/4] Running Palantir for pseudotime + fate probabilities...
+============================================
+Reading data/mouse_brain.h5ad ...
+  4,628 cells x 117 genes
+  After filtering: 4,628 cells x 117 genes
+  117 HVGs selected for Palantir
+  PCA: 30 components
+Computing diffusion maps ...
+FAILED at 2026年 03月 11日 星期三 07:45:04 CST

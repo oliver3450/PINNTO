@@ -1,0 +1,293 @@
+Starting conversion and coordinate sorting at Sun Mar  8 14:59:43 CST 2026
+Running velocyto on 108,344 beads with 32 threads...
+2026-03-08 15:35:38,278 - INFO - No SAMPLEID specified, the sample will be called final_converted_sorted_P2BBA (last 5 digits are a random-id to avoid overwriting some other file by mistake)
+2026-03-08 15:35:38,278 - DEBUG - Using logic: Default
+2026-03-08 15:35:38,346 - INFO - Read 108344 cell barcodes from /home/qukungroup/odorn/spatial_mechanistic_model/data/processed/velocyto_whitelist_final.txt
+2026-03-08 15:35:38,346 - DEBUG - Example of barcode: 22 and cell_id: final_converted_sorted_P2BBA:22
+2026-03-08 15:35:38,367 - DEBUG - Peeking into /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted_sorted.bam
+2026-03-08 15:35:38,418 - INFO - Starting the sorting process of /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted_sorted.bam the output will be at: /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/cellsorted_final_converted_sorted.bam
+2026-03-08 15:35:38,418 - INFO - Command being run is: samtools sort -l 7 -m 2048M -t CB -O BAM -@ 32 -o /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/cellsorted_final_converted_sorted.bam /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted_sorted.bam
+2026-03-08 15:35:38,418 - INFO - While the bam sorting happens do other things...
+2026-03-08 15:35:38,418 - INFO - Load the annotation from /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/gencodevM30.annotation.gtf
+2026-03-08 15:35:43,722 - DEBUG - Parsing Chromosome 1 strand - [line 0]
+2026-03-08 15:35:43,981 - DEBUG - Done with 1- [line 60047]
+2026-03-08 15:35:43,981 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:43,986 - DEBUG - Seen 1738 genes until now
+2026-03-08 15:35:43,986 - DEBUG - Parsing Chromosome 1 strand + [line 60048]
+2026-03-08 15:35:44,113 - DEBUG - Done with 1+ [line 119931]
+2026-03-08 15:35:44,113 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:44,118 - DEBUG - Seen 3538 genes until now
+2026-03-08 15:35:44,118 - DEBUG - Parsing Chromosome 10 strand - [line 119932]
+2026-03-08 15:35:44,346 - DEBUG - Done with 10- [line 162536]
+2026-03-08 15:35:44,346 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:44,349 - DEBUG - Seen 4835 genes until now
+2026-03-08 15:35:44,349 - DEBUG - Parsing Chromosome 10 strand + [line 162537]
+2026-03-08 15:35:44,452 - DEBUG - Done with 10+ [line 208516]
+2026-03-08 15:35:44,453 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:44,456 - DEBUG - Seen 6224 genes until now
+2026-03-08 15:35:44,456 - DEBUG - Parsing Chromosome 11 strand - [line 208517]
+2026-03-08 15:35:44,808 - DEBUG - Done with 11- [line 274083]
+2026-03-08 15:35:44,808 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:44,813 - DEBUG - Seen 7827 genes until now
+2026-03-08 15:35:44,813 - DEBUG - Parsing Chromosome 11 strand + [line 274084]
+2026-03-08 15:35:44,956 - DEBUG - Done with 11+ [line 339800]
+2026-03-08 15:35:44,956 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:44,961 - DEBUG - Seen 9341 genes until now
+2026-03-08 15:35:44,961 - DEBUG - Parsing Chromosome 12 strand - [line 339801]
+2026-03-08 15:35:45,215 - DEBUG - Done with 12- [line 368150]
+2026-03-08 15:35:45,215 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,218 - DEBUG - Seen 10686 genes until now
+2026-03-08 15:35:45,218 - DEBUG - Parsing Chromosome 12 strand + [line 368151]
+2026-03-08 15:35:45,304 - DEBUG - Done with 12+ [line 406090]
+2026-03-08 15:35:45,304 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,307 - DEBUG - Seen 11883 genes until now
+2026-03-08 15:35:45,307 - DEBUG - Parsing Chromosome 13 strand - [line 406091]
+2026-03-08 15:35:45,391 - DEBUG - Done with 13- [line 443954]
+2026-03-08 15:35:45,391 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,394 - DEBUG - Seen 13170 genes until now
+2026-03-08 15:35:45,394 - DEBUG - Parsing Chromosome 13 strand + [line 443955]
+2026-03-08 15:35:45,458 - DEBUG - Done with 13+ [line 473887]
+2026-03-08 15:35:45,458 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,461 - DEBUG - Seen 14432 genes until now
+2026-03-08 15:35:45,461 - DEBUG - Parsing Chromosome 14 strand - [line 473888]
+2026-03-08 15:35:45,782 - DEBUG - Done with 14- [line 513873]
+2026-03-08 15:35:45,782 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,785 - DEBUG - Seen 15637 genes until now
+2026-03-08 15:35:45,785 - DEBUG - Parsing Chromosome 14 strand + [line 513874]
+2026-03-08 15:35:45,859 - DEBUG - Done with 14+ [line 548136]
+2026-03-08 15:35:45,859 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,862 - DEBUG - Seen 16979 genes until now
+2026-03-08 15:35:45,862 - DEBUG - Parsing Chromosome 15 strand - [line 548137]
+2026-03-08 15:35:45,948 - DEBUG - Done with 15- [line 586951]
+2026-03-08 15:35:45,948 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:45,951 - DEBUG - Seen 17947 genes until now
+2026-03-08 15:35:45,951 - DEBUG - Parsing Chromosome 15 strand + [line 586952]
+2026-03-08 15:35:46,026 - DEBUG - Done with 15+ [line 620953]
+2026-03-08 15:35:46,027 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,029 - DEBUG - Seen 18898 genes until now
+2026-03-08 15:35:46,029 - DEBUG - Parsing Chromosome 16 strand - [line 620954]
+2026-03-08 15:35:46,094 - DEBUG - Done with 16- [line 650045]
+2026-03-08 15:35:46,094 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,096 - DEBUG - Seen 19712 genes until now
+2026-03-08 15:35:46,096 - DEBUG - Parsing Chromosome 16 strand + [line 650046]
+2026-03-08 15:35:46,167 - DEBUG - Done with 16+ [line 682928]
+2026-03-08 15:35:46,167 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,170 - DEBUG - Seen 20545 genes until now
+2026-03-08 15:35:46,170 - DEBUG - Parsing Chromosome 17 strand - [line 682929]
+2026-03-08 15:35:46,554 - DEBUG - Done with 17- [line 730061]
+2026-03-08 15:35:46,554 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,558 - DEBUG - Seen 21758 genes until now
+2026-03-08 15:35:46,558 - DEBUG - Parsing Chromosome 17 strand + [line 730062]
+2026-03-08 15:35:46,667 - DEBUG - Done with 17+ [line 780128]
+2026-03-08 15:35:46,667 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,672 - DEBUG - Seen 22930 genes until now
+2026-03-08 15:35:46,672 - DEBUG - Parsing Chromosome 18 strand - [line 780129]
+2026-03-08 15:35:46,716 - DEBUG - Done with 18- [line 800114]
+2026-03-08 15:35:46,716 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,718 - DEBUG - Seen 23582 genes until now
+2026-03-08 15:35:46,718 - DEBUG - Parsing Chromosome 18 strand + [line 800115]
+2026-03-08 15:35:46,777 - DEBUG - Done with 18+ [line 827661]
+2026-03-08 15:35:46,777 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,779 - DEBUG - Seen 24358 genes until now
+2026-03-08 15:35:46,779 - DEBUG - Parsing Chromosome 19 strand - [line 827662]
+2026-03-08 15:35:46,853 - DEBUG - Done with 19- [line 861281]
+2026-03-08 15:35:46,853 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,855 - DEBUG - Seen 25072 genes until now
+2026-03-08 15:35:46,855 - DEBUG - Parsing Chromosome 19 strand + [line 861282]
+2026-03-08 15:35:46,919 - DEBUG - Done with 19+ [line 890963]
+2026-03-08 15:35:46,919 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:46,921 - DEBUG - Seen 25810 genes until now
+2026-03-08 15:35:46,921 - DEBUG - Parsing Chromosome 2 strand - [line 890964]
+2026-03-08 15:35:47,497 - DEBUG - Done with 2- [line 972611]
+2026-03-08 15:35:47,497 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:47,504 - DEBUG - Seen 27678 genes until now
+2026-03-08 15:35:47,504 - DEBUG - Parsing Chromosome 2 strand + [line 972612]
+2026-03-08 15:35:47,668 - DEBUG - Done with 2+ [line 1048629]
+2026-03-08 15:35:47,668 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:47,674 - DEBUG - Seen 29698 genes until now
+2026-03-08 15:35:47,674 - DEBUG - Parsing Chromosome 3 strand - [line 1048630]
+2026-03-08 15:35:47,764 - DEBUG - Done with 3- [line 1091071]
+2026-03-08 15:35:47,765 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:47,768 - DEBUG - Seen 31189 genes until now
+2026-03-08 15:35:47,768 - DEBUG - Parsing Chromosome 3 strand + [line 1091072]
+2026-03-08 15:35:47,867 - DEBUG - Done with 3+ [line 1137650]
+2026-03-08 15:35:47,867 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:47,870 - DEBUG - Seen 32645 genes until now
+2026-03-08 15:35:47,870 - DEBUG - Parsing Chromosome 4 strand - [line 1137651]
+2026-03-08 15:35:47,988 - DEBUG - Done with 4- [line 1192335]
+2026-03-08 15:35:47,988 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:47,991 - DEBUG - Seen 34077 genes until now
+2026-03-08 15:35:47,992 - DEBUG - Parsing Chromosome 4 strand + [line 1192336]
+2026-03-08 15:35:48,519 - DEBUG - Done with 4+ [line 1245424]
+2026-03-08 15:35:48,519 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:48,524 - DEBUG - Seen 35590 genes until now
+2026-03-08 15:35:48,524 - DEBUG - Parsing Chromosome 5 strand - [line 1245425]
+2026-03-08 15:35:48,657 - DEBUG - Done with 5- [line 1307066]
+2026-03-08 15:35:48,657 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:48,662 - DEBUG - Seen 37221 genes until now
+2026-03-08 15:35:48,662 - DEBUG - Parsing Chromosome 5 strand + [line 1307067]
+2026-03-08 15:35:48,797 - DEBUG - Done with 5+ [line 1369586]
+2026-03-08 15:35:48,797 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:48,802 - DEBUG - Seen 38932 genes until now
+2026-03-08 15:35:48,802 - DEBUG - Parsing Chromosome 6 strand - [line 1369587]
+2026-03-08 15:35:48,905 - DEBUG - Done with 6- [line 1418217]
+2026-03-08 15:35:48,905 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:48,910 - DEBUG - Seen 40491 genes until now
+2026-03-08 15:35:48,910 - DEBUG - Parsing Chromosome 6 strand + [line 1418218]
+2026-03-08 15:35:49,020 - DEBUG - Done with 6+ [line 1470463]
+2026-03-08 15:35:49,020 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:49,024 - DEBUG - Seen 42124 genes until now
+2026-03-08 15:35:49,024 - DEBUG - Parsing Chromosome 7 strand - [line 1470464]
+2026-03-08 15:35:49,190 - DEBUG - Done with 7- [line 1549593]
+2026-03-08 15:35:49,190 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:49,200 - DEBUG - Seen 44687 genes until now
+2026-03-08 15:35:49,200 - DEBUG - Parsing Chromosome 7 strand + [line 1549594]
+2026-03-08 15:35:49,866 - DEBUG - Done with 7+ [line 1625946]
+2026-03-08 15:35:49,866 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:49,873 - DEBUG - Seen 46910 genes until now
+2026-03-08 15:35:49,873 - DEBUG - Parsing Chromosome 8 strand - [line 1625947]
+2026-03-08 15:35:49,963 - DEBUG - Done with 8- [line 1664849]
+2026-03-08 15:35:49,963 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:49,966 - DEBUG - Seen 48182 genes until now
+2026-03-08 15:35:49,966 - DEBUG - Parsing Chromosome 8 strand + [line 1664850]
+2026-03-08 15:35:50,078 - DEBUG - Done with 8+ [line 1714916]
+2026-03-08 15:35:50,078 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,082 - DEBUG - Seen 49530 genes until now
+2026-03-08 15:35:50,082 - DEBUG - Parsing Chromosome 9 strand - [line 1714917]
+2026-03-08 15:35:50,205 - DEBUG - Done with 9- [line 1769147]
+2026-03-08 15:35:50,205 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,209 - DEBUG - Seen 50929 genes until now
+2026-03-08 15:35:50,210 - DEBUG - Parsing Chromosome 9 strand + [line 1769148]
+2026-03-08 15:35:50,335 - DEBUG - Done with 9+ [line 1825680]
+2026-03-08 15:35:50,335 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,339 - DEBUG - Seen 52442 genes until now
+2026-03-08 15:35:50,339 - DEBUG - Parsing Chromosome M strand - [line 1825681]
+2026-03-08 15:35:50,339 - DEBUG - Done with M- [line 1825711]
+2026-03-08 15:35:50,339 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,339 - DEBUG - Seen 52451 genes until now
+2026-03-08 15:35:50,339 - DEBUG - Parsing Chromosome M strand + [line 1825712]
+2026-03-08 15:35:50,340 - DEBUG - Done with M+ [line 1825833]
+2026-03-08 15:35:50,340 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,340 - DEBUG - Seen 52479 genes until now
+2026-03-08 15:35:50,340 - DEBUG - Parsing Chromosome X strand - [line 1825834]
+2026-03-08 15:35:50,406 - DEBUG - Done with X- [line 1856823]
+2026-03-08 15:35:50,406 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,409 - DEBUG - Seen 53755 genes until now
+2026-03-08 15:35:50,409 - DEBUG - Parsing Chromosome X strand + [line 1856824]
+2026-03-08 15:35:50,481 - DEBUG - Done with X+ [line 1891081]
+2026-03-08 15:35:50,481 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,484 - DEBUG - Seen 55122 genes until now
+2026-03-08 15:35:50,484 - DEBUG - Parsing Chromosome Y strand - [line 1891082]
+2026-03-08 15:35:50,501 - DEBUG - Done with Y- [line 1898237]
+2026-03-08 15:35:50,501 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,502 - DEBUG - Seen 56004 genes until now
+2026-03-08 15:35:50,502 - DEBUG - Parsing Chromosome Y strand + [line 1898238]
+2026-03-08 15:35:50,517 - DEBUG - Assigning indexes to genes
+2026-03-08 15:35:50,518 - DEBUG - Done with Y+ [line 1904774]
+2026-03-08 15:35:50,518 - DEBUG - Fixing corner cases of transcript models containg intron longer than 1000Kbp
+2026-03-08 15:35:51,525 - DEBUG - Generated 1588289 features corresponding to 149419 transcript models from /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/gencodevM30.annotation.gtf
+2026-03-08 15:35:51,534 - INFO - Scan /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted_sorted.bam to validate intron intervals
+2026-03-08 15:35:52,779 - DEBUG - Reading /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/final_converted_sorted.bam
+2026-03-08 15:35:52,796 - DEBUG - Read first 0 million reads
+2026-03-08 15:36:07,707 - DEBUG - Read first 10 million reads
+2026-03-08 15:36:22,757 - DEBUG - Read first 20 million reads
+2026-03-08 15:36:45,499 - DEBUG - Read first 30 million reads
+2026-03-08 15:37:06,848 - DEBUG - Read first 40 million reads
+2026-03-08 15:37:28,381 - DEBUG - Read first 50 million reads
+2026-03-08 15:37:51,746 - DEBUG - Read first 60 million reads
+2026-03-08 15:38:13,458 - DEBUG - Read first 70 million reads
+2026-03-08 15:38:35,831 - DEBUG - Read first 80 million reads
+2026-03-08 15:38:57,400 - DEBUG - Read first 90 million reads
+2026-03-08 15:39:20,456 - DEBUG - Read first 100 million reads
+2026-03-08 15:39:41,100 - DEBUG - Read first 110 million reads
+2026-03-08 15:40:03,246 - DEBUG - Read first 120 million reads
+2026-03-08 15:40:26,919 - DEBUG - Read first 130 million reads
+2026-03-08 15:40:47,392 - DEBUG - Read first 140 million reads
+2026-03-08 15:41:10,006 - DEBUG - Read first 150 million reads
+2026-03-08 15:41:32,676 - DEBUG - Read first 160 million reads
+2026-03-08 15:41:55,862 - DEBUG - Read first 170 million reads
+2026-03-08 15:42:18,541 - DEBUG - Read first 180 million reads
+2026-03-08 15:42:39,994 - DEBUG - Read first 190 million reads
+2026-03-08 15:42:59,066 - DEBUG - Read first 200 million reads
+2026-03-08 15:43:21,618 - DEBUG - Read first 210 million reads
+2026-03-08 15:43:45,505 - DEBUG - Read first 220 million reads
+2026-03-08 15:44:10,048 - DEBUG - Read first 230 million reads
+2026-03-08 15:44:31,171 - DEBUG - Read first 240 million reads
+2026-03-08 15:44:54,890 - DEBUG - Read first 250 million reads
+2026-03-08 15:45:19,315 - DEBUG - Read first 260 million reads
+2026-03-08 15:45:40,675 - DEBUG - Read first 270 million reads
+2026-03-08 15:46:02,425 - DEBUG - Read first 280 million reads
+2026-03-08 15:46:23,644 - DEBUG - Read first 290 million reads
+2026-03-08 15:46:45,049 - DEBUG - Read first 300 million reads
+2026-03-08 15:47:06,833 - DEBUG - Read first 310 million reads
+2026-03-08 15:47:29,364 - DEBUG - Read first 320 million reads
+2026-03-08 15:47:51,011 - DEBUG - Read first 330 million reads
+2026-03-08 15:48:12,245 - DEBUG - Read first 340 million reads
+2026-03-08 15:48:36,462 - DEBUG - Read first 350 million reads
+2026-03-08 15:49:00,465 - DEBUG - Read first 360 million reads
+2026-03-08 15:49:21,660 - DEBUG - Read first 370 million reads
+2026-03-08 15:49:42,292 - DEBUG - Read first 380 million reads
+2026-03-08 15:50:08,128 - DEBUG - Read first 390 million reads
+2026-03-08 15:50:22,789 - DEBUG - Read first 400 million reads
+2026-03-08 15:50:40,316 - DEBUG - Read first 410 million reads
+2026-03-08 15:50:47,008 - DEBUG - End of file. Reset index: start scanning from initial position.
+2026-03-08 15:50:47,009 - DEBUG - 0 reads were skipped because no apropiate cell or umi barcode was found
+2026-03-08 15:50:47,009 - INFO - Now just waiting that the bam sorting process terminates
+2026-03-08 16:07:58,606 - INFO - bam file #0 has been sorted
+2026-03-08 16:07:58,608 - DEBUG - Start molecule counting!
+2026-03-08 16:07:59,910 - DEBUG - Features available for chromosomes : ['1-', '1+', '10-', '10+', '11-', '11+', '12-', '12+', '13-', '13+', '14-', '14+', '15-', '15+', '16-', '16+', '17-', '17+', '18-', '18+', '19-', '19+', '2-', '2+', '3-', '3+', '4-', '4+', '5-', '5+', '6-', '6+', '7-', '7+', '8-', '8+', '9-', '9+', 'M-', 'M+', 'X-', 'X+', 'Y-', 'Y+']
+2026-03-08 16:07:59,911 - DEBUG - Mask available for chromosomes : []
+2026-03-08 16:07:59,911 - DEBUG - Summarizing the results of intron validation.
+2026-03-08 16:08:00,096 - DEBUG - Validated 0 introns (of which unique intervals 0) out of 719435 total possible introns (considering each possible transcript models).
+2026-03-08 16:08:00,097 - DEBUG - Reading /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/processed_data/openst_demo_e13_mouse_head/illumina/complete_data/cellsorted_final_converted_sorted.bam
+2026-03-08 16:08:00,101 - DEBUG - Read first 0 million reads
+2026-03-08 16:08:22,088 - DEBUG - Read first 10 million reads
+2026-03-08 16:08:44,085 - DEBUG - Read first 20 million reads
+2026-03-08 16:09:06,092 - DEBUG - Read first 30 million reads
+2026-03-08 16:09:28,078 - DEBUG - Read first 40 million reads
+2026-03-08 16:09:50,076 - DEBUG - Read first 50 million reads
+2026-03-08 16:10:12,051 - DEBUG - Read first 60 million reads
+2026-03-08 16:10:34,030 - DEBUG - Read first 70 million reads
+2026-03-08 16:10:56,015 - DEBUG - Read first 80 million reads
+2026-03-08 16:11:18,037 - DEBUG - Read first 90 million reads
+2026-03-08 16:11:40,030 - DEBUG - Read first 100 million reads
+2026-03-08 16:12:02,024 - DEBUG - Read first 110 million reads
+2026-03-08 16:12:24,033 - DEBUG - Read first 120 million reads
+2026-03-08 16:12:46,041 - DEBUG - Read first 130 million reads
+2026-03-08 16:13:08,031 - DEBUG - Read first 140 million reads
+2026-03-08 16:13:30,045 - DEBUG - Read first 150 million reads
+2026-03-08 16:13:52,020 - DEBUG - Read first 160 million reads
+2026-03-08 16:14:14,028 - DEBUG - Read first 170 million reads
+2026-03-08 16:14:36,034 - DEBUG - Read first 180 million reads
+2026-03-08 16:14:58,052 - DEBUG - Read first 190 million reads
+2026-03-08 16:15:20,054 - DEBUG - Read first 200 million reads
+2026-03-08 16:15:42,076 - DEBUG - Read first 210 million reads
+2026-03-08 16:16:04,089 - DEBUG - Read first 220 million reads
+2026-03-08 16:16:26,108 - DEBUG - Read first 230 million reads
+2026-03-08 16:16:48,100 - DEBUG - Read first 240 million reads
+2026-03-08 16:17:10,120 - DEBUG - Read first 250 million reads
+2026-03-08 16:17:32,142 - DEBUG - Read first 260 million reads
+2026-03-08 16:17:54,130 - DEBUG - Read first 270 million reads
+2026-03-08 16:18:16,115 - DEBUG - Read first 280 million reads
+2026-03-08 16:18:38,114 - DEBUG - Read first 290 million reads
+2026-03-08 16:19:00,149 - DEBUG - Read first 300 million reads
+2026-03-08 16:19:22,181 - DEBUG - Read first 310 million reads
+2026-03-08 16:19:44,173 - DEBUG - Read first 320 million reads
+2026-03-08 16:20:06,206 - DEBUG - Read first 330 million reads
+2026-03-08 16:20:28,196 - DEBUG - Read first 340 million reads
+2026-03-08 16:20:50,196 - DEBUG - Read first 350 million reads
+2026-03-08 16:21:12,174 - DEBUG - Read first 360 million reads
+2026-03-08 16:21:34,164 - DEBUG - Read first 370 million reads
+2026-03-08 16:21:56,218 - DEBUG - Read first 380 million reads
+2026-03-08 16:22:18,300 - DEBUG - Read first 390 million reads
+2026-03-08 16:22:40,390 - DEBUG - Read first 400 million reads
+2026-03-08 16:23:02,492 - DEBUG - Read first 410 million reads
+2026-03-08 16:23:08,311 - DEBUG - Counting for batch 1, containing 0 cells and 0 reads
+2026-03-08 16:23:08,312 - DEBUG - 0 reads not considered because fully enclosed in repeat masked regions
+2026-03-08 16:23:08,312 - DEBUG - 0 reads were skipped because no apropiate cell or umi barcode was found
+2026-03-08 16:23:08,312 - DEBUG - Counting done!
+2026-03-08 16:23:08,312 - DEBUG - Generating output file /home/qukungroup/odorn/spatial_mechanistic_model/data/raw/openst_data/spacemake/projects/openst_demo/velocyto_output/final_converted_sorted_P2BBA.loom
+2026-03-08 16:23:08,312 - DEBUG - Collecting row attributes
+2026-03-08 16:23:08,474 - DEBUG - Generating data table
+2026-03-08 16:23:08,474 - DEBUG - Writing loom file
+Velocyto FAILED at Sun Mar  8 16:23:14 CST 2026.

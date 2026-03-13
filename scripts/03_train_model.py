@@ -100,8 +100,10 @@ def compute_data_loss(moments, empirical_moments, moment_scales):
         moment_scales:     (5,) tensor — retained for API compatibility
     """
     loss = 0.0
-    for pred, target in zip(moments, empirical_moments):
-        loss = loss + F.huber_loss(pred, target, delta=1.0)
+    for i, (pred, target) in enumerate(zip(moments, empirical_moments)):
+        scale = moment_scales[i]
+        # Normalize the tensors to keep the gradients strictly bound
+        loss = loss + F.huber_loss(pred / scale, target / scale, delta=1.0)
     return loss
 
 
@@ -301,15 +303,17 @@ def main():
         expressed_target_genes=expressed_genes,
     )
 
-    # Override config with true matrix dimensions — the GRN intersection may differ
-    # from the static values in train_config.yaml
-    config["num_tfs"] = frozen_grn.shape[0]
-    config["num_target_genes"] = frozen_grn.shape[1]
+    # Override config with true matrix dimensions — skipped when resuming because
+    # the checkpoint's architecture overrides (applied above) must be preserved.
+    if args.resume is None:
+        config["num_tfs"] = frozen_grn.shape[0]
+        config["num_target_genes"] = frozen_grn.shape[1]
 
-    # Override num_terminal_fates if Palantir fate probs are present in the h5ad
+    # Override num_terminal_fates if Palantir fate probs are present in the h5ad —
+    # also skipped when resuming to keep the checkpoint's num_terminal_fates intact.
     import scanpy as _sc
     _adata_peek = _sc.read_h5ad(args.h5ad, backed="r")
-    if "palantir_fate_probs" in _adata_peek.obsm:
+    if args.resume is None and "palantir_fate_probs" in _adata_peek.obsm:
         config["num_terminal_fates"] = _adata_peek.obsm["palantir_fate_probs"].shape[1]
         print(f"Detected {config['num_terminal_fates']} terminal fates from Palantir")
     _adata_peek.file.close()

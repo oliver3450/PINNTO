@@ -1,0 +1,27 @@
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_simple.py:391: RuntimeWarning: invalid value encountered in log1p
+  np.log1p(x, out=x)
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 142, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 138, in main
+    run_palantir_pipeline(args)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 50, in run_palantir_pipeline
+    sc.pp.highly_variable_genes(adata, n_top_genes=2000, flavor="seurat")
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py", line 88, in fn_compatible
+    return fn(*args_all, **kw)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 723, in highly_variable_genes
+    df = _highly_variable_genes_single_batch(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 343, in _highly_variable_genes_single_batch
+    df["mean_bin"] = _get_mean_bins(df["means"], flavor, n_bins)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 382, in _get_mean_bins
+    return pd.cut(means, bins=bins)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/pandas/core/reshape/tile.py", line 257, in cut
+    fac, bins = _bins_to_cuts(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/pandas/core/reshape/tile.py", line 443, in _bins_to_cuts
+    raise ValueError(
+ValueError: Bin edges must be unique: Index([nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
+       nan, nan, nan, nan, nan, nan, nan],
+      dtype='float64').
+You can drop duplicate edges by setting the 'duplicates' kwarg

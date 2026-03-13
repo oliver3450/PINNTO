@@ -1,0 +1,25 @@
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py:88: UserWarning: Some cells have zero counts
+  return fn(*args_all, **kw)
+/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_simple.py:391: RuntimeWarning: invalid value encountered in log1p
+  np.log1p(x, out=x)
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 71, in _highly_variable_genes_seurat_v3
+    from skmisc.loess import loess
+ModuleNotFoundError: No module named 'skmisc'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 147, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 143, in main
+    run_palantir_pipeline(args)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/01_run_palantir.py", line 50, in run_palantir_pipeline
+    sc.pp.highly_variable_genes(adata, n_top_genes=2000, flavor="seurat_v3",
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/legacy_api_wrap/__init__.py", line 88, in fn_compatible
+    return fn(*args_all, **kw)
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 701, in highly_variable_genes
+    return _highly_variable_genes_seurat_v3(
+  File "/home/qukungroup/odorn/miniconda3/envs/palantir/lib/python3.10/site-packages/scanpy/preprocessing/_highly_variable_genes.py", line 74, in _highly_variable_genes_seurat_v3
+    raise ImportError(msg) from e
+ImportError: Please install skmisc package via `pip install --user scikit-misc

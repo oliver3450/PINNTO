@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/diagnostics/01_moment_scales.py", line 236, in <module>
+    main()
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/diagnostics/01_moment_scales.py", line 228, in main
+    mins, maxs, samples, totals, n_genes = compute_empirical_moments(
+  File "/gpfs/home/qukungroup/odorn/spatial_mechanistic_model/scripts/diagnostics/01_moment_scales.py", line 35, in compute_empirical_moments
+    adata = sc.read_h5ad(h5ad_path)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/anndata/_io/h5ad.py", line 239, in read_h5ad
+    with h5py.File(filename, "r") as f:
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/h5py/_hl/files.py", line 566, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
+  File "/home/qukungroup/odorn/miniconda3/envs/scvelo-env/lib/python3.10/site-packages/h5py/_hl/files.py", line 241, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 104, in h5py.h5f.open
+FileNotFoundError: [Errno 2] Unable to synchronously open file (unable to open file: name = '~/spatial_mechanistic_model/data/processed/spatial_adata.h5ad', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)

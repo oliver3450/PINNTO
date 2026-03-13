@@ -1,0 +1,15 @@
+PINN Mouse Head — Resume Run
+=============================
+Job ID:           850056
+Node:             gnode14
+Partition:        GPU-8A100
+GPUs:             8x A100
+Start Time:       2026年 03月 12日 星期四 12:19:56 CST
+Resumed From:     results/pipeline_20260311_173150_job849328/checkpoints/best_model.pt
+Dataset:          data/mouse_brain.h5ad
+Train Config:     configs/train_config.yaml
+Loss Weights:     configs/loss_weights.yaml
+Results Dir:      results/resume_20260312_121943_job850056
+Python:           Python 3.10.19
+PyTorch:          2.7.0
+CUDA:             12.8

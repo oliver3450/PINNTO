@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 444, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/03_train_model.py", line 349, in main
+    get_model(model).load_state_dict(checkpoint["model_state_dict"])
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 2593, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for SpatialMechanisticModel:
+	size mismatch for fate_head.weight: copying a param with shape torch.Size([3, 117]) from checkpoint, the shape in current model is torch.Size([2, 117]).
+	size mismatch for fate_head.bias: copying a param with shape torch.Size([3]) from checkpoint, the shape in current model is torch.Size([2]).
