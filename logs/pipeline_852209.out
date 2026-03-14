@@ -1,0 +1,42 @@
+============================================
+  END-TO-END PINN PIPELINE
+  Job ID:      852209
+  Node:        gnode01
+  GPUs:        8
+  Results:     results/pipeline_20260315_020943_job852209
+  Start:       2026年 03月 15日 星期日 02:09:43 CST
+============================================
+
+============================================
+  STAGE 1/3: Preprocessing
+  2026年 03月 15日 星期日 02:09:53 CST
+============================================
+[1/6] Loading data/mouse_brain.h5ad...
+  4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Renaming obsm['X_xy_loc'] -> obsm['spatial']
+  Spatial coords: (4628, 2)
+
+[scVelo] Running RNA velocity pipeline...
+Filtered out 7 genes that are detected 20 counts (shared).
+WARNING: Did not normalize X as it looks processed already. To enforce normalization, set `enforce=True`.
+WARNING: Did not normalize spliced as it looks processed already. To enforce normalization, set `enforce=True`.
+WARNING: Did not normalize unspliced as it looks processed already. To enforce normalization, set `enforce=True`.
+computing moments based on connectivities
+    finished (0:00:00) --> added 
+    'Ms' and 'Mu', moments of un/spliced abundances (adata.layers)
+computing velocities
+    finished (0:00:00) --> added 
+    'velocity', velocity vectors for each individual cell (adata.layers)
+computing velocity graph (using 1/64 cores)
+WARNING: Unable to create progress bar. Consider installing `tqdm` as `pip install tqdm` and `ipywidgets` as `pip install ipywidgets`,
+or disable the progress bar using `show_progress_bar=False`.
+    finished (0:00:02) --> added 
+    'velocity_graph', sparse matrix with cosine correlations (adata.uns)
+[scVelo] Velocity estimation complete.
+
+[3/6] Normalizing for Palantir...
+  After filtering: 4,628 cells x 117 genes
+
+[4/6] HVG selection + Palantir...
+  117 HVGs selected (Seurat flavor)

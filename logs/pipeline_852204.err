@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 407, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 259, in main
+    adata_velo = run_scvelo(adata)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 109, in run_scvelo
+    scv.pp.filter_genes_dispersion(adata_velo, n_top_genes=2000)
+AttributeError: module 'scvelo.preprocessing' has no attribute 'filter_genes_dispersion'

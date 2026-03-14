@@ -1,0 +1,10 @@
+/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/scvelo/tools/optimization.py:184: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  gamma[i] = np.linalg.pinv(A.T.dot(A)).dot(A.T.dot(y[:, i]))
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 406, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 313, in main
+    pr_res, root_cell = run_palantir_with_retry(adata, args.n_pca, args.n_diffusion)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 135, in run_palantir_with_retry
+    import palantir
+ModuleNotFoundError: No module named 'palantir'

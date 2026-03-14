@@ -70,9 +70,11 @@ class SpatialTranscriptomicsDataset(Dataset):
             )  # (n_cells, seq_len, n_fates)
             print(f"Using Palantir fate probabilities: {self.num_fates} terminal states")
         else:
-            print("WARNING: No palantir_fate_probs found — using random placeholder fates")
-            raw_fates = np.random.rand(self.adata.n_obs, seq_len, num_fates)
-            self.fate_targets = raw_fates / raw_fates.sum(axis=-1, keepdims=True)
+            raise KeyError(
+                "FATAL: 'palantir_fate_probs' not found in adata.obsm. "
+                "Do not train on random noise. Run scripts/00_master_preprocess.py first "
+                "to compute real fate probabilities via Palantir."
+            )
 
     def _compute_moment_scales(self, n_sample: int = 2000) -> torch.Tensor:
         """
@@ -183,6 +185,7 @@ def get_dataloader(
     num_genes: int = 200,
     num_fates: int = 2,
     shuffle: bool = True,
+    drop_last: bool = True,
 ) -> DataLoader:
     """
     Convenience function to build the DataLoader for training.
@@ -214,6 +217,6 @@ def get_dataloader(
         dataset,
         batch_size=batch_size,
         shuffle=shuffle,
-        drop_last=True,
+        drop_last=drop_last,
         collate_fn=collate_fn,
     )

@@ -1,0 +1,21 @@
+============================================
+  END-TO-END PINN PIPELINE
+  Job ID:      851264
+  Node:        gnode03
+  GPUs:        8
+  Results:     results/pipeline_20260314_002939_job851264
+  Start:       2026年 03月 14日 星期六 00:29:39 CST
+============================================
+
+============================================
+  STAGE 1/3: Preprocessing
+  2026年 03月 14日 星期六 00:29:50 CST
+============================================
+[1/6] Loading data/mouse_brain.h5ad...
+  4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Renaming obsm['X_xy_loc'] -> obsm['spatial']
+  Spatial coords: (4628, 2)
+
+[scVelo] Running RNA velocity pipeline...
+Filtered out 7 genes that are detected 20 counts (shared).

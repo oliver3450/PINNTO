@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 406, in <module>
+    main()
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 258, in main
+    adata_velo = run_scvelo(adata)
+  File "/home/qukungroup/odorn/spatial_mechanistic_model/scripts/00_master_preprocess.py", line 108, in run_scvelo
+    scv.pp.filter_and_normalize(adata_velo, min_shared_counts=20, n_top_genes=2000)
+  File "/home/qukungroup/odorn/miniconda3/envs/gdl_env/lib/python3.10/site-packages/scvelo/preprocessing/utils.py", line 416, in filter_and_normalize
+    normalize_per_cell(adata, layers=layers_normalize, **kwargs)
+TypeError: normalize_per_cell() got an unexpected keyword argument 'n_top_genes'

@@ -1,0 +1,24 @@
+============================================
+  END-TO-END PINN PIPELINE
+  Job ID:      852204
+  Node:        gnode01
+  GPUs:        8
+  Results:     results/pipeline_20260315_013137_job852204
+  Start:       2026年 03月 15日 星期日 01:31:37 CST
+============================================
+
+============================================
+  STAGE 1/3: Preprocessing
+  2026年 03月 15日 星期日 01:31:48 CST
+============================================
+[1/6] Loading data/mouse_brain.h5ad...
+  4,628 cells x 117 genes
+  Layers: ['Ms', 'Mu', 'spliced', 'unspliced', 'variance_velocity', 'velocity']
+  Renaming obsm['X_xy_loc'] -> obsm['spatial']
+  Spatial coords: (4628, 2)
+
+[scVelo] Running RNA velocity pipeline...
+Filtered out 7 genes that are detected 20 counts (shared).
+WARNING: Did not normalize X as it looks processed already. To enforce normalization, set `enforce=True`.
+WARNING: Did not normalize spliced as it looks processed already. To enforce normalization, set `enforce=True`.
+WARNING: Did not normalize unspliced as it looks processed already. To enforce normalization, set `enforce=True`.

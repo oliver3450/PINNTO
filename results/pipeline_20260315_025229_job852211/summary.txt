@@ -1,0 +1,16 @@
+End-to-End PINN Pipeline
+========================
+Job ID:           852211
+Node:             gnode01
+Start:            20260315_025229
+End:              20260315_041328
+Dataset:          data/mouse_brain.h5ad
+Processed:        data/processed/spatial_adata.h5ad
+Gene List:        data/processed/expressed_genes.csv
+Train Config:     configs/train_config.yaml
+Loss Weights:     configs/loss_weights.yaml
+Checkpoint:       results/pipeline_20260315_025229_job852211/checkpoints/best_model.pt
+Evaluation:       results/pipeline_20260315_025229_job852211/evaluation/
+Python:           Python 3.10.19
+PyTorch:          2.7.0
+CUDA:             12.8
